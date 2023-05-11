@@ -58,7 +58,7 @@
       <el-table-column label="状态">
         <template #default="scope">
           <el-tag effect="plain" type="success" v-if="scope.row.status===0">未使用</el-tag>
-          <el-tag effect="plain" type="danger" v-else>已使用</el-tag>
+          <el-tag effect="plain"  v-else>已使用</el-tag>
         </template>
       </el-table-column>
 

@@ -91,6 +91,26 @@ export const asyncRoutes = [
                 },
                 component: ()=> import('@/views/edu/student/StudentIdList.vue')
             },
+            {
+                path: 'viptype',
+                name: 'VipType',
+                meta: {
+                    title: 'VIP管理',
+                    icon: 'School',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/viptype/VipTypeList.vue')
+            },
+            {
+                path: 'teacher',
+                name: 'Teacher',
+                meta: {
+                    title: '讲师管理',
+                    icon: 'Avatar',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/teacher/TeacherList.vue')
+            },
         ]
 
     },

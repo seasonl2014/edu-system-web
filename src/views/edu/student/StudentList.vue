@@ -46,21 +46,16 @@
 
       <el-table-column label="学号">
         <template #default="scope">
-          <span>{{scope.row.stuno}}</span>
+          <span>{{scope.row.stuNo}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="姓名">
+      <el-table-column label="登录账号">
         <template #default="scope">
-          <span>{{scope.row.name}}</span>
+          <span>{{scope.row.loginName}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="班级">
-        <template #default="scope">
-          <span>{{scope.row.gradeClass.code}}</span>
-        </template>
-      </el-table-column>
 
       <el-table-column label="性别">
         <template #default="scope">
@@ -80,6 +75,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="邮箱">
+        <template #default="scope">
+          <span>{{scope.row.email}}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column label="创建时间">
         <template #default="scope">
           <span>{{formatTime(scope.row.createTime,'yyyy-MM-dd')}}</span>
@@ -88,9 +89,9 @@
 
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button size="small" @click="editStudent(scope.row.id)">编辑</el-button>
-          <el-popconfirm confirm-button-text="确定" cancel-button-text="取消" :icon="Delete" icon-color="#626AEF"
-          :title="'确定删除学生名为“'+scope.row.name+'”的学生吗？'"
+          <el-button size="small" @click="editStudent(scope.row.id)">开通会员</el-button>
+          <el-popconfirm confirm-button-text="确定" cancel-button-text="取消" icon="Delete" icon-color="#626AEF"
+          :title="'确定删除学生名为“'+scope.row.loginName+'”的学生吗？'"
           @confirm="delStudent(scope.row.id)">
             <template #reference>
               <el-button size="small" type="danger">删除</el-button>

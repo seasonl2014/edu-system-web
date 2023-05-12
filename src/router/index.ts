@@ -59,6 +59,31 @@ export const staticRouter = [
 // 定义动态路由
 export const asyncRoutes = [
     {
+        path: '/daily',
+        name: 'Daily',
+        meta: {
+            title: '日常管理',
+            icon: 'GoldMedal',
+            role: ['ROLE_ADMIN']
+        },
+        redirect: '/daily/subject',
+        component: ()=> import('@/views/system/layout/Index.vue'),
+        isMenu: true,
+        funcNode: 2,
+        children: [
+            {
+                path: 'subject',
+                name: 'Subject',
+                meta: {
+                    title: '分类管理',
+                    icon: 'Clock',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/subject/SubjectList.vue')
+            },
+        ]
+    },
+    {
         path: '/base',
         name: 'Base',
         meta: {

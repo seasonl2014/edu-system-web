@@ -45,7 +45,7 @@
 
       <el-table-column label="序号" width="100" type="index" :index="Nindex"/>
 
-      <el-table-column label="金额">
+      <el-table-column label="会员价格">
         <template #default="scope">
           <span>{{scope.row.vipMoney}}</span>
         </template>

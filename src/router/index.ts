@@ -10,8 +10,35 @@ import {useMemberStore} from "../store/modules/member";
 export const staticRouter = [
     {
         path: '/',
-        redirect: '/homeindex',
+        redirect: '/index',
         isMenu: false
+    },
+    {
+        path: '/index',
+        name: 'Index',
+        meta: { title: 'Go学堂-个人讲师创业专用一站式在线教育平台' },
+        isMenu: false,
+        component: ()=> import('@/views/edu/index/Index.vue')
+    },
+    {
+        path: '/edu',
+        name: 'Edu',
+        redirect: '/edu/list',
+        isMenu: false,
+        children: [
+            {
+                path: 'list',
+                name: 'List',
+                meta: {title: '全部课程 - Go学堂'},
+                component: ()=>import('@/views/edu/list/List.vue')
+            },
+            {
+                path: 'details/:id',
+                name: 'Details',
+                meta: {title: '课程详情页 - Go学堂'},
+                component: ()=>import('@/views/edu/details/Details.vue')
+            },
+        ]
     },
     {
         path: '/login',
@@ -80,6 +107,16 @@ export const asyncRoutes = [
                     role: ['ROLE_ADMIN']
                 },
                 component: ()=> import('@/views/edu/subject/SubjectList.vue')
+            },
+            {
+                path: 'course',
+                name: 'Course',
+                meta: {
+                    title: '课程管理',
+                    icon: 'Box',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/course/CourseList.vue')
             },
         ]
     },
@@ -194,7 +231,7 @@ const router = createRouter({
 })
 
 // 设置白名单
-const whiteList = ['/login']
+const whiteList = ['/login','/edu/details','/edu/list']
 // 路由拦截守卫
 router.beforeEach(async (to,from,next)=> {
     // 1.Nprogress 开始
@@ -214,7 +251,7 @@ router.beforeEach(async (to,from,next)=> {
         next()
     }else{
         // 5.判断访问路径是前台还是后台
-        if(to.path.indexOf('hotel')!==-1){
+        if(to.path.indexOf('edu')!==-1){
             // 6.判断前台是否有token，没有重定向login
             const memberStore = useMemberStore()
             // 已经登录,直接放行

@@ -42,66 +42,80 @@
 
       <el-table-column label="序号" width="80" type="index" :index="Nindex"/>
 
-      <el-table-column label="封面" width="80">
+      <el-table-column label="封面"  align="center" width="100px" padding="0px">
         <template #default="scope">
-          <img :src="url+'uploadFile/'+scope.row.coverImg" style="width: 64px;height: 40px;">
+          <el-popover effect="light" trigger="hover" placement="right">
+            <template #default>
+              <img :src="scope.row.cover"
+                   style="height: 200px;width: 360px"/>
+
+            </template>
+            <template #reference>
+              <img :src="scope.row.cover" style="height: 38px;width: 58px;cursor: pointer"/>
+            </template>
+          </el-popover>
         </template>
       </el-table-column>
 
-      <el-table-column label="课程名">
+      <el-table-column label="短标题" show-overflow-tooltip>
         <template #default="scope">
-          <span>{{scope.row.CourseName}}</span>
+          <span>{{scope.row.shortTitle}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="课程号" width="80">
+      <el-table-column label="长标题" show-overflow-tooltip>
         <template #default="scope">
-          <span>{{scope.row.CourseNumber}}</span>
+          <span>{{scope.row.title}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="床型">
+      <el-table-column label="价格" width="90">
         <template #default="scope">
-          <span>{{scope.row.bedType}}</span>
+          <span><el-tag>{{ Number(scope.row.price) === 0 ? '免费' :
+              '¥' + scope.row.price.toFixed(2) }}</el-tag></span>
         </template>
       </el-table-column>
 
-      <el-table-column label="宽带">
+      <el-table-column label="课时">
         <template #default="scope">
-          <span>{{scope.row.broadband}}</span>
+          <el-tooltip class="item" effect="dark" content="创建课程大纲" placement="top">
+            <a @click="() => syllabusData(scope.row.id)">
+              <el-tag type="success"  size="mini" closable v-text="scope.row.lessonNum"></el-tag>
+            </a>
+          </el-tooltip>
         </template>
       </el-table-column>
 
-      <el-table-column label="标准价">
+      <el-table-column label="学习人数">
         <template #default="scope">
-          <span>{{scope.row.standardPrice}}</span>
+          <el-tooltip class="item" effect="dark" content="浏览课程的用户" placement="top">
+            <a>
+              <el-tag type="success"> {{ scope.row.viewCount }}人</el-tag>
+            </a>
+          </el-tooltip>
         </template>
       </el-table-column>
 
-      <el-table-column label="会员价">
+      <el-table-column label="vip学员">
         <template #default="scope">
-          <span>{{scope.row.memberPrice}}</span>
+          <el-tooltip class="item" effect="dark" content="加入VIP免费观看课程的用户" placement="top">
+            <el-tag  type="warning">{{ scope.row.vipCount }}人</el-tag>
+          </el-tooltip>
         </template>
       </el-table-column>
 
       <el-table-column label="课程状态">
         <template #default="scope">
-         <el-tag type="success" v-if="scope.row.CourseStatus==0">空闲</el-tag>
-          <el-tag type="info" v-else-if="scope.row.CourseStatus==1">预订</el-tag>
-          <el-tag type="warning" v-else-if="scope.row.CourseStatus==2">入住</el-tag>
-          <el-tag type="danger" v-else>维护中</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="课程类型">
-        <template #default="scope">
-          <span>{{scope.row.hotelCourseType.typeName}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="所属楼层">
-        <template #default="scope">
-          <span>{{scope.row.hotelFloor.floorName}}</span>
+          <el-tooltip :content="scope.row.status === 'Draft' ? '未发布' : '已发布'" placement="top">
+            <el-switch
+                v-model="scope.row.status"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                active-value="Normal"
+                inactive-value="Draft"
+                @change="updateStatus(scope.row.id,scope.row.status)">
+            </el-switch>
+          </el-tooltip>
         </template>
       </el-table-column>
 
@@ -111,16 +125,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="220">
         <template #default="scope">
-          <el-button size="small" @click="editCourse(scope.row.id)">编辑</el-button>
-          <el-popconfirm confirm-button-text="确定" cancel-button-text="取消" :icon="Delete"
-          icon-color="#626AEF" :title="'确定删除名为“'+scope.row.CourseName+'”的课程吗？'"
-          @confirm="delCourse(scope.row.id)">
-            <template #reference>
-              <el-button size="small" type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
+          <el-button  text   @click="() => detailUpdateData(scope.row.id)" :loading="detailUpdateLoading.includes(scope.row.id)" icon="edit">编辑</el-button>
+          <el-button   text   @click="() => deleteTableData(scope.row.id)" :loading="deleteLoading.includes(scope.row.id)" icon="delete">删除</el-button>
+          <el-button  text   title="上传课程资源"  :loading="detailUploadLoading.includes(scope.row.id)"    size="mini" icon="upload" @click="uploadResourceById(scope.row.id)">上传</el-button>
+          <el-button  text    @click="() => downloadTableData(scope.row.id)" :loading="downloadLoading.includes(scope.row.id)" icon="download">下载</el-button>
         </template>
       </el-table-column>
 
@@ -238,7 +248,14 @@ const Nindex = (index: number)=> {
   const pageSize = state.pageSize
   return index+1+(page-1)*pageSize
 }
-
+// 更新按钮状态
+const detailUpdateLoading = ref<number[]>([]);
+// 删除 按钮状态
+const deleteLoading = ref<number[]>([]);
+// 上传课程资料按钮状态
+const detailUploadLoading = ref<number[]>([]);
+// 下载 loading
+const downloadLoading = ref<number[]>([]);
 // 新增课程弹出框状态
 const addCourseDialogFormVisible =ref(false)
 // 添加课程

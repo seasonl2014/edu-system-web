@@ -16,12 +16,16 @@
         <div class="edu-banner-nav">
           <h3>{{item.name}}</h3>
           <div class="banner-list">
-            <a href="" @click.prevent="toDetails(course.id)" class="banner-list-item" v-for="course in item.eduCourseList" :key="course.id">
+
+            <a href=""  class="banner-list-item" v-for="course in item.eduCourseList" :key="course.id">
+              <router-link :to="'/edu/details/'+course.id" :title="course.title" target="_blank">
               <div class="banner-list-img"><img :src="course.cover"> </div>
               <div class="banner-list-text">
                 {{ course.shortTitle}}
               </div>
+              </router-link>
             </a>
+
           </div>
         </div>
       </div>

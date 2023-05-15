@@ -13,7 +13,7 @@
       </li>
 
       <li class="edu-nav-item">
-        <router-link to="/vip" target="_blank">VIP会员</router-link>
+        <router-link to="/edu/vip" target="_blank">VIP会员</router-link>
       </li>
 
       <li class="edu-nav-item" :class="{'edu-active':eduActive=='/edu/list'}">

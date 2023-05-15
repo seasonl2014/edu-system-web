@@ -35,8 +35,13 @@ export const staticRouter = [
             {
                 path: 'details/:id',
                 name: 'Details',
-                meta: {title: '课程详情页 - Go学堂'},
                 component: ()=>import('@/views/edu/details/Details.vue')
+            },
+            {
+                path: 'vip',
+                name: 'VipInfo',
+                meta: {title: 'vip详情 - Go学堂'},
+                component: ()=>import('@/views/edu/vip/VipInfo.vue')
             },
         ]
     },
@@ -231,7 +236,7 @@ const router = createRouter({
 })
 
 // 设置白名单
-const whiteList = ['/login','/edu/details','/edu/list']
+const whiteList = ['/login','/edu/details','/edu/list','/edu/vip']
 // 路由拦截守卫
 router.beforeEach(async (to,from,next)=> {
     // 1.Nprogress 开始
@@ -239,7 +244,7 @@ router.beforeEach(async (to,from,next)=> {
 
     // 2.设置标题
     if(typeof(to.meta.title) === 'string'){
-        document.title = to.meta.title ||'后台管理系统'
+        document.title = to.meta.title ||'Go学堂-个人讲师创业专用一站式在线教育平台'
     }
 
     // 3.如果是白名单的路径，直接放行
@@ -259,7 +264,7 @@ router.beforeEach(async (to,from,next)=> {
                 next()
             // 未登录，跳转到前台登录页
             }else{
-                return next({path: `/hotel/login?redirect=${to.path}`,replace:true})
+                return next({path: `/edu/login?redirect=${to.path}`,replace:true})
             }
         }else {
             // 7.判断是否有token，没有重定向login

@@ -2,12 +2,9 @@
 <div class="hotel-footer">
   <p><a href="go.xueden.cn">Go学堂</a>2023 © <a href="go.xueden.cn">go.xueden.cn</a></p>
   友情链接
-  <a href="www.xueden.cn">友情链接1</a>
-  <a href="www.xueden.cn">友情链接2</a>
-  <a href="www.xueden.cn">友情链接3</a>
-  <a href="www.xueden.cn">友情链接4</a>
-  <a href="www.xueden.cn">友情链接5</a>
-  <a href="www.xueden.cn">友情链接6</a>
+  <a href="http://hotel.xueden.cn">酒店管理系统</a>
+  <a href="http://edu.xueden.cn">学灯网</a>
+  <a href="http://student.xueden.cn">学生信息管理系统</a>
 </div>
 </template>
 
@@ -16,8 +13,8 @@
 
 <style scoped>
 .hotel-footer {
-  margin: 50px 0 0;
-  padding: 20px 0 30px;
+  margin: 18px 0 0;
+  padding: 40px 0 30px;
   line-height: 30px;
   text-align: center;
   color: #737573;

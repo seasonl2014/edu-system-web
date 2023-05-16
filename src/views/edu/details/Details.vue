@@ -11,9 +11,17 @@
   <div class="details-banner">
     <h3>{{courseInfo.title}}</h3>
     <div class="details-tag">
-      <span>所属讲师：墨鱼老师</span>
-      <span>课程难度：中级</span>
-      <span>课程类型：实战课程</span>
+      <span>所属讲师：{{courseInfo.eduTeacher!=null?courseInfo.eduTeacher.name:'未知'}}</span>
+      <span v-if="courseInfo.difficulty===0">课程难度：入门</span>
+      <span v-if="courseInfo.difficulty===1">课程难度：初级</span>
+      <span v-if="courseInfo.difficulty===2">课程难度：中级</span>
+      <span v-if="courseInfo.difficulty===3">课程难度：高级</span>
+
+      <span v-if="courseInfo.courseType===0">课程类型：新手入门</span>
+      <span v-if="courseInfo.courseType===1">课程类型：新上好课</span>
+      <span v-if="courseInfo.courseType===2">课程类型：技能提高</span>
+      <span v-if="courseInfo.courseType===3">课程类型：实战课程</span>
+
     </div>
     <div class="details-banner-btn"> 收藏 </div>
   </div>
@@ -34,9 +42,9 @@
       </div>
       <div class="details-one-right">
         <button type="button" class="el-button el-button--primary el-button--mini is-round">
-          <span>点击购买</span>
+          <span>加入学习</span>
         </button>
-        <button type="button" class="el-button el-button--warning el-button--mini is-round">
+        <button type="button" @click="addVip" class="el-button el-button--warning el-button--mini is-round">
           <span>加入VIP</span>
         </button>
       </div>
@@ -129,7 +137,51 @@
                 </div>
               </div>
             </div>
-            <!--右边 end-->
+            <!--右边试看 end-->
+            <!--右边讲师 start-->
+            <div class="recommendcourse">
+              <!-- 讲师 -->
+              <div class="recom-box clearfix">
+                <h3 class="box-tit">讲师</h3>
+                <div class="box-bd">
+                  <div class="tea-inst">
+                    <div class="medias">
+                      <a href="https://www.imooc.com/t/6726286" data-href="https://www.imooc.com/space/teacher/id/6726286" target="_blank">
+                        <img src="@/static/img/teacher.png" class="media">
+                        <span class="name">{{courseInfo.eduTeacher!=null?courseInfo.eduTeacher.name:''}}</span>
+                        <i class="ic sz-imooc"></i>
+                      </a>
+                      <span class="job"></span>
+                    </div>
+                    <p class="desc">{{courseInfo.eduTeacher!=null?courseInfo.eduTeacher.remarks:''}}</p>
+                  </div>
+                </div>
+                <!-- 讲师 end -->
+                <h3 class="box-tit">讲师其他课程</h3>
+                <div class="box-bd" style="overflow: hidden">
+                  <template v-for="item in courseInfo.teacherCourses">
+                     <a href="" target="_blank" class="right-teacher-course">
+                    <div class="flex-box">
+                      <img class="course-img" :alt="item.title" :src="item.cover">
+                      <div class="course-info">
+                        <div class="name">{{item.title}}</div>
+                        <p>
+
+                          <span>{{item.viewCount}}</span>
+                        </p>
+                        <div class="priceDiscount ">
+                          <div class="price l">￥{{item.price}}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                  </template>
+                </div>
+
+
+              </div>
+            </div>
+            <!--右边讲师 end-->
 
           </div>
           <!--课程大纲 end-->
@@ -288,6 +340,15 @@ const videoPreview = async (video:object)=> {
   videoInfo.titleVideo = video.title
   videoInfo.playAuth = data.result.playAuth
   visible.value = true
+}
+// 关闭预览视频窗口
+const onCancel = ()=> {
+  visible.value = false
+}
+
+// 跳转到Vip页面
+const addVip = ()=> {
+  window.open('#/edu/vip', '_blank');
 }
 
 </script>
@@ -711,6 +772,125 @@ const videoPreview = async (video:object)=> {
   font-weight: 700;
 }
 /*右边试看样式 end*/
+
+/*右边讲师详情信息 start*/
+.recommendcourse {
+  float: right;
+  width: 328px;
+  padding-top: 36px;
+}
+.recom-box {
+  padding-top: 36px;
+  background-color: #fff;
+  border-radius: 10px;
+}
+.recommendcourse .box-class-tit, .recommendcourse .box-tit {
+  font-size: 16px;
+  color: #07111b;
+  font-weight: 700;
+  padding-bottom: 20px;
+  margin-left: 24px;
+}
+
+.tea-inst {
+  padding-bottom: 30px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #d9dde1;
+}
+.tea-inst .medias {
+  margin-bottom: 12px;
+  overflow: hidden;
+  padding: 0 24px;
+}
+.tea-inst .medias .media {
+  float: left;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 2px 12px 0 0;
+}
+.tea-inst .medias .name {
+  font-weight: 700;
+  color: #4d555d;
+  font-size: 18px;
+  line-height: 24px;
+}
+.tea-inst .medias .job {
+  display: block;
+  font-size: 12px;
+  color: #4d555d;
+}
+.tea-inst .desc {
+  padding: 0 24px;
+  line-height: 24px;
+  font-size: 12px;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+.right-teacher-course {
+  padding: 0 24px;
+  box-sizing: border-box;
+  margin-top: 24px;
+  display: inline-block;
+  width: 100%;
+}
+.right-teacher-course .flex-box {
+  display: flex;
+}
+.right-teacher-course .course-img {
+  width: 114px;
+  height: 64px;
+  margin-right: 8px;
+  border-radius: 8px;
+}
+
+.right-teacher-course .course-info {
+  width: 0;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  position: relative;
+}
+
+.right-teacher-course .course-info .name {
+  font-size: 14px;
+  color: #4d555d;
+  line-height: 20px;
+  font-weight: 400;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.right-teacher-course .course-info p span:not(:last-child) {
+  margin-right: 12px;
+}
+.right-teacher-course .course-info p span {
+  font-size: 12px;
+  color: #93999f;
+  line-height: 20px;
+  font-weight: 200;
+}
+.right-teacher-course .course-info p span {
+  font-size: 12px;
+  color: #93999f;
+  line-height: 20px;
+  font-weight: 200;
+}
+.right-teacher-course .course-info .priceDiscount .price {
+  font-weight: 700;
+  font-size: 12px;
+  color: #4d555d;
+  line-height: 20px;
+  margin-right: 8px;
+}
+/*右边讲师详情信息 end*/
+
+
 /*课程大纲样式 end*/
 
 /*第二屏样式  end*/

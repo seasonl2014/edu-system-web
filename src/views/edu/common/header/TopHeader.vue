@@ -21,12 +21,12 @@
       </li>
 
       <!--已登录 start-->
-      <template v-if="memberInfo.nickname!=''">
+      <template v-if="studentToken!=''">
         <li class="edu-nav-item edu-member" :class="{'edu-active':eduActive=='/edu/myInfo'}">
           <router-link class="edu-nav-avatar edu-case-active" to="/edu/myInfo">
-            <img v-if="memberInfo.memberIcon!=null" :src="url+'uploadFile/'+memberInfo.memberIcon">
+            <img v-if="studentInfo.studentIcon!=null" :src="url+'uploadFile/'+studentInfo.studentIcon">
             <img v-else src="@/assets/edu/images/head.jpg">
-            <cite>欢迎您：{{memberInfo.nickname}}</cite>
+            <cite>欢迎您：{{studentInfo.loginName}}</cite>
           </router-link>
         </li>
         <li class="edu-nav-item">
@@ -59,12 +59,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import {useRoute} from 'vue-router'
-import { useMemberStore } from "@/store/modules/member"
+import { useStudentStore } from "@/store/modules/student"
 import { ElMessage,ElMessageBox } from 'element-plus'
 // 服务器路径
 const url = import.meta.env.VITE_APP_BASE_API
 // 获取登录会员信息
-const {memberInfo} = useMemberStore()
+const {studentInfo,studentToken} = useStudentStore()
 const route = useRoute()
 const eduActive = ref()
 eduActive.value = route.path
@@ -82,7 +82,7 @@ const exitSystem = async ()=> {
   ).then(()=> {
     ElMessage.success('退出成功')
     // 清除用户登录信息
-    window.localStorage.removeItem('memberStore')
+    window.localStorage.removeItem('studentStore')
     // 返回课程首页
     window.location.href='/'
   }).catch(()=> {

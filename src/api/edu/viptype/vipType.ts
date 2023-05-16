@@ -41,3 +41,18 @@ export function delVipTypeApi(id:number) {
         method: 'delete'
     })
 }
+
+// 前台获取首页VIP类型
+export function getAllVipApi() {
+    return request({
+        url: 'vipType/getAllVip',
+        method: 'get'
+    })
+}
+// 前台购买VIP会员
+export function buyVipApi(id:number) {
+    return request({
+        url: `vipType/buyVip/${id}`,
+        method: 'get'
+    })
+}

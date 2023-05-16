@@ -3,7 +3,7 @@ import { createRouter,createWebHashHistory } from 'vue-router'
 import Nprogress from "../config/nprogress";
 import {useUserStore} from "../store/modules/user";
 import {useMenuStore} from "../store/modules/menu";
-import {useMemberStore} from "../store/modules/member";
+import {useStudentStore} from "../store/modules/student";
 // 定义一些路由，每一个都需要映射到一个组件
 
 // 定义静态路由
@@ -42,6 +42,12 @@ export const staticRouter = [
                 name: 'VipInfo',
                 meta: {title: 'vip详情 - Go学堂'},
                 component: ()=>import('@/views/edu/vip/VipInfo.vue')
+            },
+            {
+                path: 'login',
+                name: 'EduLogin',
+                meta: {title: '登录Go学堂'},
+                component: ()=>import('@/views/edu/login/Login.vue')
             },
         ]
     },
@@ -258,9 +264,9 @@ router.beforeEach(async (to,from,next)=> {
         // 5.判断访问路径是前台还是后台
         if(to.path.indexOf('edu')!==-1){
             // 6.判断前台是否有token，没有重定向login
-            const memberStore = useMemberStore()
+            const studentStore = useStudentStore()
             // 已经登录,直接放行
-            if(memberStore.memberToken!=''){
+            if(studentStore.studentToken!=''){
                 next()
             // 未登录，跳转到前台登录页
             }else{

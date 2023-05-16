@@ -51,7 +51,7 @@
 
             </template>
             <template #reference>
-              <img :src="scope.row.cover" style="height: 38px;width: 58px;cursor: pointer"/>
+              <img :src="scope.row.cover" style="height: 38px;width: 58px;cursor: pointer" @click="uploadCover(scope.row.id,scope.row.title)"/>
             </template>
           </el-popover>
         </template>
@@ -78,8 +78,8 @@
 
       <el-table-column label="课时">
         <template #default="scope">
-          <el-tooltip class="item" effect="dark" content="创建课程大纲" placement="top">
-            <a @click="() => syllabusData(scope.row.id)">
+          <el-tooltip class="item" effect="dark" content="点击创建课程大纲" placement="top">
+            <a @click="() => syllabusData(scope.row.id)" style="cursor: pointer;">
               <el-tag type="success"  size="mini" closable v-text="scope.row.lessonNum"></el-tag>
             </a>
           </el-tooltip>
@@ -172,6 +172,16 @@
     <!--编辑课程组件 end-->
   </el-dialog>
   <!--编辑课程弹出框 end-->
+
+  <!--上传课程封面 弹出框 start-->
+    <UploadCover
+        :course-id="courseId"
+        :course-title="courseTitle"
+        :upload-cover-visible="uploadCoverVisible"
+        @onCancel="uploadCoverCancel"
+    />
+  <!--上传课程封面 弹出框 start-->
+
 </template>
 
 <script setup lang="ts">
@@ -181,6 +191,7 @@ import {ref,reactive,toRefs,onMounted} from 'vue'
 import { ElMessage } from 'element-plus'
 import AddCourse from "./components/AddCourse.vue"
 import EditCourse from "./components/EditCourse.vue"
+import UploadCover from "@/views/edu/course/components/UploadCover.vue"
 import {exportExcel} from "@/utils/exportExcel";
 import {delCourseApi, getCourseApi, getCourseListApi} from "@/api/edu/course/course";
 // 服务器路径
@@ -318,6 +329,23 @@ const exportExcelAction = () => {
   })
 }
 const {tableData,pageSize,loading,total,searchValue} = toRefs(state)
+
+// 上传封面
+// 课程ID
+const courseId = ref()
+// 课程标题
+const courseTitle = ref('')
+// 上传课程封面弹出框状态
+const uploadCoverVisible = ref(false)
+const uploadCover = (id:number,title:string)=> {
+  courseTitle.value = `你正在给课程：“${title}”上传封面`
+  uploadCoverVisible.value = true
+  courseId.value = id
+}
+// 关闭上传封面弹出框
+const uploadCoverCancel = ()=> {
+  uploadCoverVisible.value = false
+}
 </script>
 
 <style scoped>

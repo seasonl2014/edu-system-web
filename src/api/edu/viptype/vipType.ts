@@ -56,3 +56,18 @@ export function buyVipApi(id:number) {
         method: 'get'
     })
 }
+
+// 前台根据订单编号获取订单信息
+export function getOrderInfoApi(orderNo:string) {
+    return request({
+        url: `vipType/getOrderInfo/${orderNo}`,
+        method: 'get'
+    })
+}
+// 去支付
+export function payBuyApi(orderNo:string) {
+    return request({
+        url: `vipType/payBuy/${orderNo}`,
+        method: 'get'
+    })
+}

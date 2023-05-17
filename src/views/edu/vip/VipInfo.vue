@@ -51,6 +51,9 @@ import Footer from "@/views/edu/common/footer/Footer.vue"
 import {ref,onMounted} from 'vue'
 import {getAllVipApi, buyVipApi} from "@/api/edu/viptype/vipType"
 import {ElMessage} from 'element-plus'
+import {useRouter } from 'vue-router'
+// 获取路由对象
+const router = useRouter()
 // vip类型数据
 const vipTypes = ref([])
 // 获取所有VIP类型
@@ -69,6 +72,10 @@ const buyVip = async (id:number)=> {
   const { data } = await buyVipApi(id)
   if(data.status === 200){
     ElMessage.success(data.message)
+    // 跳转到订单付款页
+    router.push({
+      path: `/edu/viporderpay/${data.result.orderNo}`
+    })
   }else {
     ElMessage.error(data.message)
   }

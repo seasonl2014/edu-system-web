@@ -44,6 +44,12 @@ export const staticRouter = [
                 component: ()=>import('@/views/edu/vip/VipInfo.vue')
             },
             {
+                path: 'viporderpay/:orderno',
+                name: 'VipOrderPay',
+                meta: {title: 'VIP订单付款 - Go学堂'},
+                component: ()=>import('@/views/edu/vip/VipOrderPay.vue')
+            },
+            {
                 path: 'login',
                 name: 'EduLogin',
                 meta: {title: '登录Go学堂'},

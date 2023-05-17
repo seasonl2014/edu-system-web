@@ -10,7 +10,7 @@
   <div class="login" style="position: relative;">
     <el-form ref="loginFormRef" :rules="loginFormRules" :model="loginForm">
       <div class="loginbox">
-        <a class="ewm_login" href="https://love.beihai365.com/wechatlogin.php"><span>扫码登录更便捷</span></a>
+        <a class="ewm_login" @click="wxlogin"><span>扫码登录更便捷</span></a>
         <div class="login02">
           <div class="tit">账号登录 <a class="changelogin hide">使用密码登录</a> <a class="changelogin hide">使用验证码登录</a>
           </div>
@@ -28,7 +28,7 @@
             <li style="border:0">
               <el-button class="sub1" :loading="subLoading" @click="login(loginFormRef)">登录</el-button>
             </li>
-            <h1 style="position:relative">还没有帐号？<a href="https://love.beihai365.com/reg.php">立即注册</a><span style="position:absolute; right:0">忘记密码？<a href="https://love.beihai365.com/findpwd.php">立即找回</a></span></h1>
+            <h1 style="position:relative">还没有帐号？<a @click="wxlogin">微信扫码即注册</a><span style="position:absolute; right:0">忘记密码？<a @click="wxlogin">立即找回</a></span></h1>
           </ul>
         </div>
       </div>
@@ -105,6 +105,36 @@ const login = async (formEl: FormInstance | undefined)=> {
     subLoading.value = false
   })
 }
+const page = reactive({
+  width: window.screen.width * 0.5,
+  height: window.screen.height * 0.5
+})
+// 微信扫码登录
+const wxlogin = ()=> {
+  const url = 'http://dev01.sv1.k9s.run:2271/wechat/login'
+  window.open(url, 'newWindow', `resizable=yes, height=${page.height}, width=${page.width}, top=10%, left=10%, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no`)
+  window.addEventListener('message', resolveSocialLogin, false)
+}
+
+const resolveSocialLogin= async(e:any)=> {
+  console.info('传入参数', e.data)
+  // 设置学员token
+  studentStore.setStudentToken(e.data.studentToken)
+  // 设置登录学员信息
+  studentStore.setStudentInfo({
+    studentIcon: e.data.studentIcon,
+    name: e.data.name
+  })
+  if(studentStore.studentToken!=null){
+    window.removeEventListener('message',resolveSocialLogin,false)
+    // 跳转首页
+    router.push({
+      path: '/index'
+    })
+  }
+
+}
+
 </script>
 
 <style scoped>
@@ -225,5 +255,6 @@ ul, li, dl, dt {
 }
 .login form ul h1 a {
   color: #ff536a;
+  cursor: pointer;
 }
 </style>

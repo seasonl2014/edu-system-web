@@ -24,9 +24,9 @@
       <template v-if="studentToken!=''">
         <li class="edu-nav-item edu-member" :class="{'edu-active':eduActive=='/edu/myInfo'}">
           <router-link class="edu-nav-avatar edu-case-active" to="/edu/myInfo">
-            <img v-if="studentInfo.studentIcon!=null" :src="url+'uploadFile/'+studentInfo.studentIcon">
+            <img v-if="studentInfo.studentIcon!=null" :src="studentInfo.studentIcon">
             <img v-else src="@/assets/edu/images/head.jpg">
-            <cite>欢迎您：{{studentInfo.loginName}}</cite>
+            <cite>欢迎您：{{studentInfo.name}}</cite>
           </router-link>
         </li>
         <li class="edu-nav-item">
@@ -38,16 +38,13 @@
       <!--未登录 start-->
       <template v-else>
       <li class="edu-nav-item" :class="{'edu-active':eduActive=='/edu/login'}">
-        <router-link to="/edu/login">马上登录</router-link>
-      </li>
-      <li class="edu-nav-item" :class="{'edu-active':eduActive=='/edu/register'}">
-        <router-link to="/edu/register">立即注册</router-link>
+        <router-link to="/edu/login">登录 | 注册</router-link>
       </li>
       </template>
       <!--未登录 end-->
 
       <li class="edu-nav-item">
-        <router-link to="/home" target="_blank">进入后台</router-link>
+        <router-link to="/home" target="_blank">我是讲师</router-link>
       </li>
 
     </ul>

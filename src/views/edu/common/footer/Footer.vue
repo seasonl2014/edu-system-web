@@ -5,6 +5,7 @@
   <a href="http://hotel.xueden.cn">酒店管理系统</a>
   <a href="http://edu.xueden.cn">学灯网</a>
   <a href="http://student.xueden.cn">学生信息管理系统</a>
+  <el-backtop :right="100" :bottom="100" />
 </div>
 </template>
 

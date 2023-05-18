@@ -41,7 +41,7 @@
         </div>
       </div>
       <div class="details-one-right">
-        <button type="button" class="el-button el-button--primary el-button--mini is-round">
+        <button @click="studyCourse" type="button" class="el-button el-button--primary el-button--mini is-round">
           <span>加入学习</span>
         </button>
         <button type="button" @click="addVip" class="el-button el-button--warning el-button--mini is-round">
@@ -212,7 +212,8 @@
             <div class="down">
               <div class="source">
                 <span class="downloadCourse"><el-icon size="18"><Download /></el-icon> 【机试题】Vue实现抽奖效果</span>
-                <el-button color="#e6a23c" style="color: #fff;"  @click="downloadBtn" :loading="downLoading">下载资料</el-button>
+                <el-button v-if="studentToken!=null && studentToken!=''" color="#e6a23c" style="color: #fff;"  @click="downloadBtn" :loading="downLoading">下载资料</el-button>
+                <span v-else><el-tag>请先登录</el-tag></span>
               </div>
             </div>
 
@@ -252,16 +253,21 @@ import Footer from "@/views/edu/common/footer/Footer.vue"
 import VideoPreview from "@/views/edu/details/components/VideoPreview.vue"
 import {ref,onMounted,reactive} from 'vue'
 import {useRouter,useRoute} from 'vue-router'
+import {useStudentStore} from "@/store/modules/student"
+import { ElMessageBox } from 'element-plus'
 import {
   getChapterListByCourseIdApi,
   getCourseDetailApi,
   getParamListByCourseIdApi,
-  getPlayAuthDataApi
+  getPlayAuthDataApi, studyCourseApi
 } from "@/api/edu/detail/detail";
 import {formatDuration, formatTime} from "@/utils/date";
 // 路由对象
 const router = useRouter()
 const route = useRoute()
+// 登录用户token
+const {studentToken} = useStudentStore()
+console.log('详情页studentToken:',studentToken)
 // 下载资料按钮状态
 const downLoading = ref(false)
 // 点击下载资料
@@ -349,6 +355,21 @@ const onCancel = ()=> {
 // 跳转到Vip页面
 const addVip = ()=> {
   window.open('#/edu/vip', '_blank');
+}
+
+// 加入学习
+const studyCourse = async ()=> {
+  if(studentToken!=null && studentToken!=''){
+    const {data} = await studyCourseApi(courseId)
+    console.log("data:",data)
+    if(data.status=== 200){
+      router.push({
+        path: `/edu/studyCourse/${data.result.orderNo}`
+      })
+    }
+  }else {
+    ElMessageBox.alert('请先登录！','温馨提示')
+  }
 }
 
 </script>

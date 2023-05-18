@@ -50,6 +50,12 @@ export const staticRouter = [
                 component: ()=>import('@/views/edu/vip/VipOrderPay.vue')
             },
             {
+                path: 'studyCourse/:orderno',
+                name: 'StudyCourse',
+                meta: {title: '课程订单付款 - Go学堂'},
+                component: ()=>import('@/views/edu/details/components/CourseOrderPay.vue')
+            },
+            {
                 path: 'login',
                 name: 'EduLogin',
                 meta: {title: '登录Go学堂'},

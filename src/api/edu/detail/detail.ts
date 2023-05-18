@@ -28,3 +28,25 @@ export function getPlayAuthDataApi(vodId:string) {
         url: `/edu/front/detail/getPlayAuth/${vodId}`
     })
 }
+
+// 学员购买课程
+export function studyCourseApi(courseId:number) {
+    return request({
+        url: `/edu/front/detail/buy/${courseId}`,
+        method: 'post'
+    })
+}
+// 根据订单编号获取课程订单详情
+export function getCourseOrderInfoApi(orderNo:string) {
+    return request({
+        url: `/edu/front/detail/getCourseOrderInfo/${orderNo}`
+    })
+}
+
+// 购买课程支付
+export function payBuyCourseApi(orderNo:string) {
+    return request({
+        url: `/edu/front/detail/pay/${orderNo}`,
+        method: 'post'
+    })
+}

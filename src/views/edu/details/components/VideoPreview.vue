@@ -18,7 +18,12 @@ const creatAliplayer = () => {
     width: '100%',
     vid: props.videoInfo.videoSourceId,
     playauth: props.videoInfo.playAuth,
-    cover: 'http://picture.xueden.cn/moyuplaylogo.jpg'
+    cover: 'http://picture.xueden.cn/moyuplaylogo.jpg',
+    components: [{
+      name: 'BulletScreenComponent',
+      type: AliPlayerComponent.BulletScreenComponent,
+      args: ['加入VIP会员，免费观看全站视频和下载课程资料！', {fontSize: '24px', color: '#2121c4'}, 'random']
+    }]
   }, function(player: any) {
     console.log('播放器创建好了。')
   })

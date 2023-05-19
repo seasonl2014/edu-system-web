@@ -91,7 +91,6 @@ const payCode = ref('支付失败，请加客服微信：w11184629')
 const payBuy = async ()=> {
   const { data } = await payBuyCourseApi(orderNo.value)
   payCode.value = JSON.parse(data.result).code_url
-  console.log('payCode.value',payCode.value)
   payVisible.value = true
   webSocketPay(orderNo.value)
 }
@@ -147,7 +146,7 @@ const successMsg = (msg:string)=> {
       {
         confirmButtonText: '去下载课程资料',
         cancelButtonText: '去观看视频',
-        type: 'warning',
+        type: 'success',
         draggable: true,
       }
   )

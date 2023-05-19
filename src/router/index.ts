@@ -16,7 +16,7 @@ export const staticRouter = [
     {
         path: '/index',
         name: 'Index',
-        meta: { title: 'Go学堂-个人讲师创业专用一站式在线教育平台' },
+        meta: { title: 'Go学堂-个人开发者创业专用一站式在线教育平台' },
         isMenu: false,
         component: ()=> import('@/views/edu/index/Index.vue')
     },
@@ -54,6 +54,11 @@ export const staticRouter = [
                 name: 'StudyCourse',
                 meta: {title: '课程订单付款 - Go学堂'},
                 component: ()=>import('@/views/edu/details/components/CourseOrderPay.vue')
+            },
+            {
+                path: 'play',
+                name: 'PlayVideo',
+                component: ()=> import('@/views/edu/video/PlayVideo.vue')
             },
             {
                 path: 'login',
@@ -262,7 +267,7 @@ router.beforeEach(async (to,from,next)=> {
 
     // 2.设置标题
     if(typeof(to.meta.title) === 'string'){
-        document.title = to.meta.title ||'Go学堂-个人讲师创业专用一站式在线教育平台'
+        document.title = to.meta.title ||'Go学堂-个人开发者创业专用一站式在线教育平台'
     }
 
     // 3.如果是白名单的路径，直接放行

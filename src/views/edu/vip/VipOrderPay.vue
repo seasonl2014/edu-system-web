@@ -60,15 +60,17 @@
 import TopHeader from "@/views/edu/common/header/TopHeader.vue"
 import Search from "@/views/edu/common/search/Search.vue"
 import Footer from "@/views/edu/common/footer/Footer.vue"
-import {useRoute} from 'vue-router'
+import {useRoute,useRouter} from 'vue-router'
 import {ref,onMounted} from 'vue'
 import {getOrderInfoApi, payBuyApi} from "@/api/edu/viptype/vipType"
+import { ElMessageBox,ElMessage } from 'element-plus'
 import vueQr from 'vue-qr/src/packages/vue-qr.vue'
 // 二维码中间图片
 import logoSrc from '@/static/img/weixinpay.png'
-
+// 服务器路径
+const url = import.meta.env.VITE_APP_WS_API
 const route = useRoute()
-console.log('orderno:',route.params.orderno)
+const router = useRouter()
 const orderNo = ref(route.params.orderno)
 // 根据订单号获取订单信息
 const orderInfo = ref()
@@ -86,8 +88,76 @@ const payCode = ref('支付失败，请加客服微信：w11184629')
 const payBuy = async ()=> {
   const { data } = await payBuyApi(orderNo.value)
   payCode.value = JSON.parse(data.message).code_url
-  console.log('payCode.value',payCode.value)
   payVisible.value = true
+  webSocketPay(orderNo.value)
+}
+// 学员点击付款后
+const webSocketPay = (orderNo:string)=> {
+  if ("WebSocket" in window){
+    console.info("您的浏览器支持 WebSocket!")
+    // 打开一个 web socket
+    let ws = new WebSocket(url+"/edu/websocket/"+orderNo+"");
+    ws.onopen = function()
+    {
+      // Web Socket 已连接上，使用 send() 方法发送数据
+      ws.send("发送数据");
+      console.info("websocket已连接上使用 send() 方法发送数据")
+      //alert("数据发送中...");
+    };
+
+    ws.onmessage = function (evt)
+    {
+      console.info("websocket使用 onmessage() 方法接收数据")
+      let received_msg = JSON.parse(evt.data);
+      console.log('received_msg:',received_msg)
+      if(received_msg.status==1){
+        payVisible.value = false
+        successMsg(received_msg)
+      }
+
+    };
+
+    ws.onclose = function()
+    {
+      // 关闭 websocket
+      ws.close();
+
+    };
+
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function(){
+      ws.onclose();
+    }
+  }else {
+    console.info("您的浏览器不支持 WebSocket!")
+    return null
+  }
+}
+
+// 付款成功提示消息
+const successMsg = (msg:string)=> {
+  ElMessageBox.confirm(
+      '恭喜你购买VIP成功',
+      '支付成功',
+      {
+        confirmButtonText: '去下载课程资料',
+        cancelButtonText: '去观看视频',
+        type: 'success',
+        draggable: true,
+      }
+  )
+      .then(() => {
+        // 去下载课程资源
+        router.push({
+          path: `/edu/details/${orderInfo.value.courseId}`
+        })
+      })
+      .catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '跳转到观看视频',
+        })
+      })
 }
 </script>
 

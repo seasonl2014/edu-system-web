@@ -110,7 +110,8 @@
                                 <el-icon><VideoCamera /></el-icon>
                                 <span class="type-text">视频：</span>
                                 <span class="title_info js-watchTrigger">{{video.title}}  ({{formatDate(video.duration*1000)}})</span>
-                                <span class="watch-free js-watchForFree" v-if="video.isFree==0" data-index="0" @click="videoPreview(video)">试看</span>
+                                <span class="watch-free js-watchForFree" v-if="video.isFree==0 && !(courseInfo.viewVideo)" data-index="0" @click="videoPreview(video)">试看</span>
+                                <span class="watch-free js-watchForFree"  style="color: #4522af;" v-else-if="courseInfo.viewVideo" @click="playVideo(courseInfo.id,video.id)">播放</span>
                               </li>
 
                             </ul>
@@ -361,15 +362,28 @@ const addVip = ()=> {
 const studyCourse = async ()=> {
   if(studentToken!=null && studentToken!=''){
     const {data} = await studyCourseApi(courseId)
-    console.log("data:",data)
     if(data.status=== 200){
       router.push({
         path: `/edu/studyCourse/${data.result.orderNo}`
       })
+    }else {
+      ElMessageBox.alert(data.message)
     }
   }else {
     ElMessageBox.alert('请先登录！','温馨提示')
   }
+}
+
+// 跳转到视频播放页
+const playVideo = (courseId:number,videoId:number)=> {
+  console.log('courseId:',courseId,'videoId:',videoId)
+  router.push({
+    path: '/edu/play',
+    query: {
+      courseId:courseId,
+      videoId:videoId
+    }
+  })
 }
 
 </script>

@@ -22,6 +22,15 @@ export function getChapterListByCourseIdApi(courseId:number) {
     })
 }
 
+// 根据课程ID获取课程资料数据
+export function getCourseDataByCourseIdApi(courseId:number) {
+    return request({
+        url: `/edu/front/detail/getCourseDataByCourseId/${courseId}`,
+        method: 'get'
+    })
+}
+
+
 // 根据视频Id获取播放凭证
 export function getPlayAuthDataApi(vodId:string) {
     return request({
@@ -48,5 +57,12 @@ export function payBuyCourseApi(orderNo:string) {
     return request({
         url: `/edu/front/detail/pay/${orderNo}`,
         method: 'post'
+    })
+}
+
+// 点击下载课程资料
+export function downloadCourseDataApi(courseDataId:number) {
+    return request({
+        url: `/edu/front/detail/download/${courseDataId}`
     })
 }

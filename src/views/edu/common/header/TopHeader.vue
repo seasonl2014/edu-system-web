@@ -23,7 +23,7 @@
       <!--已登录 start-->
       <template v-if="studentToken!=''">
         <li class="edu-nav-item edu-member" :class="{'edu-active':eduActive=='/edu/myInfo'}">
-          <router-link class="edu-nav-avatar edu-case-active" to="/edu/myInfo">
+          <router-link class="edu-nav-avatar edu-case-active" to="/edu/student/myInfo">
             <img v-if="studentInfo.studentIcon!=null" :src="studentInfo.studentIcon">
             <img v-else src="@/assets/edu/images/head.jpg">
             <cite>欢迎您：{{studentInfo.name}}</cite>

@@ -18,38 +18,25 @@
            <li class="right-li">
              <div class="li-title title-active">
                <el-icon style="line-height: 36px;"><Reading /></el-icon>
-               <a href="javascript:;">课程</a>
+               <a :class="show=='course'?'title-active':''" href="javascript:;" @click="showType('course')">课程</a>
              </div>
-             <div class="li-content" style="display: none;">
-               <div class="course-name">WEB前端 ‘进阶版’ 八股文</div>
+             <div class="li-content" :style="show=='course'?'display: block;':'display: none;'">
+               <div class="course-name">{{courseInfo.title}}</div>
                <div class="course-desc">
-                 该课程暂无介绍
+                 {{courseInfo.courseDesc}}
                </div>
                <div class="course-img">
-                 <img src="https://oss.xuexiluxian.cn/xiaoluxian-vcr/607d93059604468db0be164de7a1840a.png" alt="WEB前端 ‘进阶版’ 八股文" title="WEB前端 ‘进阶版’ 八股文">
-               </div>
-               <div class="teacher-desc">
-                 <div class="teacher-title">讲师介绍</div>
-                 <div class="avatar-name">
-                   <div class="teacher-avatar">
-                     <img src="https://oss.xuexiluxian.cn/xiaoluxian-vcr/dd1e5fb53ce742ae8928b48f95bbcd59.jpg" alt="WEB前端 ‘进阶版’ 八股文" title="WEB前端 ‘进阶版’ 八股文">
-                   </div>
-                   <div class="teacher-name">
-                     <p>得智老师</p>
-                     <p>金牌讲师</p>
-                   </div>
-                 </div>
-                 <div class="teacher-tages"></div>
+                 <img :src="courseInfo.cover" :alt="courseInfo.title" :title="courseInfo.title">
                </div>
              </div>
            </li>
            <li class="right-li">
              <div class="li-title title-active">
                <el-icon><VideoCamera /></el-icon>
-               <a class="title-active" href="javascript:;">章节</a>
+               <a :class="show=='video'?'title-active':''" href="javascript:;" @click="showType('video')">章节</a>
              </div>
 
-             <div class="li-content" style="display: block;">
+             <div class="li-content" :style="show=='video'?'display: block;':'display: none;'">
                <div class="content-scroll">
                  <ul>
                    <!--章节视频 start-->
@@ -106,8 +93,6 @@ const detailsVideo = reactive({
 })
 // 课程信息对象
 const courseInfo = ref('')
-// 章节ID
-const chapterId = ref()
 // 保存记忆播放时间
 const saveTime =  (memoryVideo: string, currentTime: string)=> {
   localStorage.setItem(memoryVideo, currentTime);
@@ -221,6 +206,13 @@ const handleCollapse = (id:number)=>{
   }
 
 }
+
+// 右边选项卡事件
+const show = ref('video')
+const showType = (val:string)=> {
+  show.value = val
+}
+
 onMounted(()=> {
   getVideo(route.query.videoId)
   getChapterListByCourseId()
@@ -318,6 +310,7 @@ ul, li {
 .play-right .right-box .li-content .course-desc {
   font-size: 14px;
   color: #a8a9ab;
+  margin-top: 38px;
 }
 .play-right .right-box .li-content .course-img {
   width: 330px;

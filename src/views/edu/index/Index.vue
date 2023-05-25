@@ -759,7 +759,7 @@ onMounted(()=> {
   height: 20px;
   color: #fff;
   font-size: 12px;
-  background: linear-gradient(90deg,#ff928e,#fe7062 99%);
+  background: linear-gradient(90deg,#d5cb5a,#977e06 99%);
   border-radius: 24px 0 24px 0;
 }
 

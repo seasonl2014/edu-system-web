@@ -23,7 +23,6 @@
       <span v-if="courseInfo.courseType===3">课程类型：实战课程</span>
 
     </div>
-    <div class="details-banner-btn"> 收藏 </div>
   </div>
   <!--banner end-->
   <div class="edu-container">
@@ -90,7 +89,7 @@
                 <div class="outline-list">
                   <ul class="chapter-ul">
                     <!--章节 start-->
-                    <li class="chapter" v-for="item in chapterList">
+                    <li class="chapter" v-for="(item,index) in chapterList">
                       <div class="chapter-bd">
                           <h5 class="name">{{item.title}}
                             <span class="watch-free" v-if="item.children.length==0">录制中...</span>
@@ -99,13 +98,22 @@
                           </h5>
                           <p class="desc">{{item.remarks}}</p>
                           <p class="addbox">
-                            <a class="showbtn js-click-chapter" data-toggle="0">
-                              收起列表<el-icon><ArrowUpBold /></el-icon>
+                            <a class="showbtn js-click-chapter" @click="foldAndUnfold(index,item.id)">
+
+                              <template v-if="videoListStatus === (index+item.id)">
+                                展开列表
+                                <el-icon><ArrowDownBold /></el-icon>
+                              </template>
+
+                              <template v-else>
+                                收起列表
+                                <el-icon><ArrowUpBold /></el-icon>
+                              </template>
                             </a>
                           </p>
 
                            <!--视频列表 start-->
-                            <ul>
+                            <ul   :key="index" :id="index+item.id">
                               <li v-for="video in item.children">
                                 <el-icon><VideoCamera /></el-icon>
                                 <span class="type-text">视频：</span>
@@ -126,19 +134,18 @@
               </div>
             </div>
             <!--左边 end-->
-            <!--右边试看 start-->
+            <!--右边广告 start-->
             <div class="right-video-wrap">
-              <h2 class="title">试看</h2>
+              <h2 class="title">微信扫一扫联系官方指导老师</h2>
               <div class="right-video-box">
 
                 <div class="mask"></div>
                 <div class="content">
-                  <el-icon style="font-size: 48px;color: #b2b8bd;cursor: pointer;"><VideoPlay /></el-icon>
-                  <p>全部试看小节</p>
+                  <img src="@/static/img/mywechat.jpg">
                 </div>
               </div>
             </div>
-            <!--右边试看 end-->
+            <!--右边右边广告 end-->
             <!--右边讲师 start-->
             <div class="recommendcourse">
               <!-- 讲师 -->
@@ -210,10 +217,10 @@
 
           <!--下载资料 start-->
           <div  class="course-attachment">
-            <div class="down">
+            <div class="down" v-for="item in courseDataList">
               <div class="source">
-                <span class="downloadCourse"><el-icon size="18"><Download /></el-icon> 【机试题】Vue实现抽奖效果</span>
-                <el-button v-if="studentToken!=null && studentToken!=''" color="#e6a23c" style="color: #fff;"  @click="downloadBtn" :loading="downLoading">下载资料</el-button>
+                <span class="downloadCourse"><el-icon size="18"><Download /></el-icon> {{item.name}}</span>
+                <el-button v-if="studentToken!=null && studentToken!=''" color="#e6a23c" style="color: #fff;"  @click="downloadBtn(item.id)" :loading="downLoading">下载资料</el-button>
                 <span v-else><el-tag>请先登录</el-tag></span>
               </div>
             </div>
@@ -257,7 +264,8 @@ import {useRouter,useRoute} from 'vue-router'
 import {useStudentStore} from "@/store/modules/student"
 import { ElMessageBox } from 'element-plus'
 import {
-  getChapterListByCourseIdApi,
+  downloadCourseDataApi,
+  getChapterListByCourseIdApi, getCourseDataByCourseIdApi,
   getCourseDetailApi,
   getParamListByCourseIdApi,
   getPlayAuthDataApi, studyCourseApi
@@ -272,8 +280,14 @@ console.log('详情页studentToken:',studentToken)
 // 下载资料按钮状态
 const downLoading = ref(false)
 // 点击下载资料
-const downloadBtn = (id:number)=> {
+const downloadBtn = async (courseDataId:number)=> {
   downLoading.value = true
+  const { data } = await downloadCourseDataApi(courseDataId)
+  if(data.status === 200){
+    window.location.href = import.meta.env.VITE_APP_BASE_API+"edu/oss/downFileFromOss?fileName="+data.result.downloadLink;
+  }else {
+    ElMessageBox.alert('温馨提示',data.message)
+  }
 }
 // 课程ID
 const courseId:any = route.params.id
@@ -314,6 +328,8 @@ const handleClick = (tab:any,event:any)=> {
     getParamListByCourseId()
   }else if (tabName=='second'){ // 获取课程大纲
      getChapterListByCourseId()
+  }else if (tabName=='four'){// 获取课程资料
+    getCourseDataByCourseId()
   }
 }
 // 环境参数数据
@@ -328,6 +344,14 @@ const getChapterListByCourseId = async ()=> {
   const { data } = await getChapterListByCourseIdApi(courseId)
   chapterList.value = data.result
 }
+
+// 获取课程资料
+const courseDataList = ref([])
+const getCourseDataByCourseId = async ()=> {
+  const { data } = await getCourseDataByCourseIdApi(courseId)
+  courseDataList.value = data.result
+}
+
 
 // 弹出预览视频状态
 const visible = ref(false)
@@ -386,6 +410,17 @@ const playVideo = (courseId:number,videoId:number)=> {
   })
 }
 
+// 展开和收缩视频列表
+const videoListStatus = ref() // 默认全部展开
+const foldAndUnfold = (index:number,id:number)=> {
+  if(videoListStatus.value===index+id){//两次点击的对象相同，打开
+    window.document.getElementById(index+id).style.display = "block";
+    videoListStatus.value = ''
+  }else {//点击的对象不同，先关闭前一对象，再打开当前对象
+    videoListStatus.value = index+id
+    window.document.getElementById(index+id).style.display = "none";
+  }
+  }
 </script>
 
 <style scoped>
@@ -627,6 +662,10 @@ const playVideo = (courseId:number,videoId:number)=> {
 
 /*下载资料样式 end*/
 /*课程大纲样式 start*/
+.hide {
+  display: none;
+}
+
 .chapter-div{
   border-top: 1px solid rgb(27 111 167 / 10%);
 }
@@ -776,7 +815,7 @@ const playVideo = (courseId:number,videoId:number)=> {
   float: right;
   position: relative;
   width: 100%;
-  height: 176px;
+  height: 226px;
   border-radius: 10px;
   overflow: hidden;
   background-size: cover;
@@ -796,10 +835,12 @@ const playVideo = (courseId:number,videoId:number)=> {
   width: 100%;
   height: 100%;
   text-align: center;
-  padding-top: 48px;
   box-sizing: border-box;
 }
-
+.right-video-box .content img {
+  width: 100%;
+  height: 100%;
+}
 .right-video-box .content p {
   font-size: 14px;
   color: #fff;

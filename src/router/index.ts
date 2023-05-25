@@ -1,5 +1,5 @@
 // 1、导入Vue Router模块
-import { createRouter,createWebHashHistory } from 'vue-router'
+import { createRouter,createWebHashHistory,createWebHistory } from 'vue-router'
 import Nprogress from "../config/nprogress";
 import {useUserStore} from "../store/modules/user";
 import {useMenuStore} from "../store/modules/menu";
@@ -65,6 +65,36 @@ export const staticRouter = [
                 name: 'EduLogin',
                 meta: {title: '登录Go学堂'},
                 component: ()=>import('@/views/edu/login/Login.vue')
+            },
+            {
+                path: 'student/myinfo',
+                name: 'MyInfo',
+                meta: {title: '个人信息-Go学堂'},
+                component: ()=> import('@/views/edu/student/MyInfo.vue')
+            },
+            {
+                path: 'student/mycourse',
+                name: 'MyCourse',
+                meta: {title: '我的课程-Go学堂'},
+                component: ()=> import('@/views/edu/student/MyCourse.vue')
+            },
+            {
+                path: 'student/myvip',
+                name: 'MyVip',
+                meta: {title: '购买VIP记录-Go学堂'},
+                component: ()=> import('@/views/edu/student/MyVip.vue')
+            },
+            {
+                path: 'student/mydownload',
+                name: 'MyDownload',
+                meta: {title: '下载课程资料记录-Go学堂'},
+                component: ()=> import('@/views/edu/student/MyDownload.vue')
+            },
+            {
+                path: 'student/account',
+                name: 'Account',
+                meta: {title: '绑定账号-Go学堂'},
+                component: ()=> import('@/views/edu/student/Account.vue')
             },
         ]
     },
@@ -254,12 +284,12 @@ export const asyncRoutes = [
 
 // 3、创建路由实例并传递‘routes’配置
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes: staticRouter
 })
 
 // 设置白名单
-const whiteList = ['/login','/edu/details','/edu/list','/edu/vip']
+const whiteList = ['/','/login','/edu/details','/edu/list','/edu/vip']
 // 路由拦截守卫
 router.beforeEach(async (to,from,next)=> {
     // 1.Nprogress 开始

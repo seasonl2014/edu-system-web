@@ -47,3 +47,69 @@ export function deleteStudentApi(id: number) {
         method: 'delete'
     })
 }
+
+/**
+ * 前台获取个人信息
+ */
+export function getStudentInfoApi() {
+    return request({
+        url: '/edu/front/student/center/info',
+        method: 'get'
+    })
+}
+
+/**
+ * 前台更新学员个人信息
+ */
+export function updateApi(data: object) {
+    return request({
+        url: 'edu/front/student/center/update',
+        method: 'post',
+        data
+    })
+}
+
+// 获取学员我的课程
+export function getMyCourseListApi(params: object) {
+    return request({
+        url: 'edu/front/student/center/getMyCourseList',
+        method: 'get',
+        params
+    })
+}
+// 获取购买VIP记录
+export function getBuyVipListApi() {
+    return request({
+        url: 'edu/front/student/center/getMyVipList',
+        method: 'get'
+    })
+}
+// 获取邮箱验证码
+export function sendEmailApi(email:string) {
+    return request({
+        url: 'user/sendEmail',
+        method: 'get',
+        params: {
+            email
+        }
+    })
+}
+// 更改绑定邮箱
+export function bindEmailApi(email:string,code:string) {
+    return request({
+        url: 'edu/front/student/center/bindEmail',
+        method: 'put',
+        params: {
+            email,
+            code
+        }
+    })
+}
+
+// 发送短信验证码
+export function sendSmsApi(phone:string) {
+    return request({
+        url: `edu/front/student/center/sendSms/${phone}`,
+        method: 'post'
+    })
+}

@@ -113,3 +113,23 @@ export function sendSmsApi(phone:string) {
         method: 'post'
     })
 }
+// 更新手机号
+export function bindPhoneApi(phone:string,phoneCode:string) {
+    return request({
+        url: 'edu/front/student/center/updatePhone',
+        method: 'put',
+        params: {
+            phone,
+            phoneCode
+        }
+    })
+}
+
+// 更新密码
+export function savePassWordApi(data:object) {
+    return request({
+        url: 'edu/front/student/center/savePassWord',
+        method: 'put',
+        data
+    })
+}

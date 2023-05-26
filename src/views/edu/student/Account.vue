@@ -99,6 +99,30 @@
     </div>
     <!--解绑手机 end-->
 
+    <!--更改密码 start-->
+    <div class="j-cover-box change-password" v-show="passwordState">
+      <h3>修改密码</h3>
+      <form class="cover-form">
+        <div class="cover-item">
+          <span>原始密码：</span>
+          <input type="text" v-model="passWordInfo.passWord" placeholder="请输入密码" class="cover-input">
+        </div>
+        <div class="cover-item">
+          <span>新密码：</span>
+          <input type="text" v-model="passWordInfo.newPassWord" placeholder="请输入密码" class="cover-input">
+        </div>
+        <div class="cover-item">
+          <span>确认密码：</span>
+          <input type="text" v-model="passWordInfo.resNewPassWord" placeholder="请输入密码" class="cover-input">
+        </div>
+        <div class="cover-btn">
+          <input type="button" value="确定" class="form-btn subBtn" @click="savePassWord()">
+          <input type="button" value="取消" class="form-btn cancel" @click="cancelUpdatePassWord()">
+        </div>
+      </form>
+    </div>
+    <!--更改密码 end-->
+
   </div>
   <!--弹框 end-->
 
@@ -114,7 +138,14 @@ import Search from "@/views/edu/common/search/Search.vue"
 import Footer from "@/views/edu/common/footer/Footer.vue"
 import StudentLeft from "@/views/edu/student/components/StudentLeft.vue"
 import { ref,reactive,onMounted} from 'vue'
-import {bindEmailApi, getStudentInfoApi, sendEmailApi, sendSmsApi} from "@/api/edu/student/student";
+import {
+  bindEmailApi,
+  bindPhoneApi,
+  getStudentInfoApi,
+  savePassWordApi,
+  sendEmailApi,
+  sendSmsApi
+} from "@/api/edu/student/student";
 import {ElMessageBox} from 'element-plus'
 const  menuType = ref('account')
 // 学生信息对象
@@ -237,6 +268,81 @@ const sendSms = async ()=>{
   if(verifyPhone()){
     const { data } = await sendSmsApi(studentInfo.phone)
     ElMessageBox.alert(data.message)
+  }
+}
+
+/**
+ *
+ * 取消绑定邮箱
+ */
+const cancelBindMobile = ()=>{
+  coverState.value = false
+  bindPhoneState.value = false
+}
+/**
+ *
+ * 提交绑定手机号
+ */
+const bindPhone = async ()=>{
+  const { data } = await bindPhoneApi(studentInfo.phone,studentInfo.phoneCode)
+  ElMessageBox.alert(data.message)
+}
+// 密码对象
+const passWordInfo =reactive({
+      passWord: '',
+      newPassWord: '',
+      resNewPassWord: ''
+})
+// 修改密码弹出框状态
+const passwordState = ref(false)
+/**
+ *
+ * 弹出修改密码
+ */
+const changePassWord = ()=>{
+  coverState.value = true
+  passwordState.value = true
+}
+/**
+ *
+ * 取消修改密码
+ */
+const cancelUpdatePassWord = ()=>{
+  coverState.value = false
+  passwordState.value = false
+}
+/**
+ *
+ * 验证密码
+ */
+const verifyPassword = ()=>{
+  // 验证密码
+  let reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_]+$)(?![a-z0-9]+$)(?![a-z\W_]+$)(?![0-9\W_]+$)[a-zA-Z0-9\W_]{6,30}$/
+  if (passWordInfo.newPassWord === '' ||  !reg.test(passWordInfo.newPassWord)) {
+    ElMessageBox.alert("密码为数字，小写字母，大写字母，特殊符号 至少包含三种，长度为 6 - 30位")
+    return false
+  }else {
+    if(passWordInfo.resNewPassWord!=passWordInfo.newPassWord){
+      ElMessageBox.alert("两次输入密码不一致")
+      return false
+    }else {
+      return true
+    }
+
+  }
+}
+/**
+ *
+ * 保存密码
+ */
+const savePassWord = async ()=> {
+  if (!verifyPassword()) {
+    return;
+  }
+  const { data } = await savePassWordApi(passWordInfo)
+  ElMessageBox.alert(data.message)
+  if(data.status === 200){
+    cancelUpdatePassWord()
   }
 }
 </script>

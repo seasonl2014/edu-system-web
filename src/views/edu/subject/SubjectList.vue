@@ -118,7 +118,7 @@
       </div>
     </template>
     <!--编辑课程类型组件 Start-->
-    <EditSubject :SubjectInfo="SubjectInfo" @closeEditSubjectForm="closeEditSubjectForm" @success="success"/>
+    <EditSubject :subjectInfo="subjectInfo" @closeEditSubjectForm="closeEditSubjectForm" @success="success"/>
     <!--编辑课程类型组件 end-->
 
   </el-dialog>
@@ -234,10 +234,10 @@ const success = ()=> {
 // 编辑课程类型弹出框状态
 const editSubjectDialogFormVisible = ref(false)
 // 编辑课程类型信息
-const SubjectInfo = ref()
+const subjectInfo = ref()
 const editSubject = async (id:number)=> {
   const { data } = await getSubjectApi(id)
-  SubjectInfo.value = data.result
+  subjectInfo.value = data.result
   editSubjectDialogFormVisible.value = true
 }
 // 关闭编辑课程类型弹出框

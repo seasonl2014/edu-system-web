@@ -25,7 +25,13 @@ export function getAllUserListApi() {
         method: 'get'
     })
 }
-
+// 获取所有讲师
+export function getAllTeacherListApi(){
+    return request({
+        url: 'teacher/all',
+        method: 'get'
+    })
+}
 // 根据ID获取教师详情信息
 export function getTeacherApi(id:number) {
     return request({

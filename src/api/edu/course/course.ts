@@ -54,3 +54,31 @@ export function countCourseApi() {
     })
 }
 
+// 更改课程状态
+export function updateStatusApi(courseId:number,status:string) {
+    return request({
+        url: 'course/updateStatus',
+        method: 'put',
+        params: {
+            courseId,
+            status
+        }
+    })
+}
+
+// 设置课程开发环境参数
+export function setEnvironmenApi(data:object) {
+    return request({
+        url: 'course/saveOrUpdateEnvironmen',
+        method: 'post',
+        data
+    })
+}
+
+// 根据课程ID获取环境参数列表数据
+export function getEnvironmenListApi(courseId:number) {
+    return request({
+        url: `course/getEnvironmenList/${courseId}`,
+        method: 'get'
+    })
+}

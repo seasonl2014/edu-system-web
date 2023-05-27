@@ -289,12 +289,11 @@ const router = createRouter({
 })
 
 // 设置白名单
-const whiteList = ['/','/login','/edu/details','/edu/list','/edu/vip']
+const whiteList = ['/index','/login','/edu/details','/edu/list','/edu/vip']
 // 路由拦截守卫
 router.beforeEach(async (to,from,next)=> {
     // 1.Nprogress 开始
     Nprogress.start()
-
     // 2.设置标题
     if(typeof(to.meta.title) === 'string'){
         document.title = to.meta.title ||'Go学堂-个人开发者创业专用一站式在线教育平台'

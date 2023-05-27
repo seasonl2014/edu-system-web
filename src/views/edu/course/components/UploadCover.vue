@@ -10,6 +10,7 @@
       :action="uploadURL"
       name="fileResource"
       multiple
+      :data="{courseId:props.courseId}"
   >
     <el-icon class="el-icon--upload"><upload-filled /></el-icon>
     <div class="el-upload__text">

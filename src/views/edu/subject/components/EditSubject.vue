@@ -61,11 +61,11 @@ const formSubject = reactive({
 })
 
 // 获取父组件传过来的roomTypeInfo对象
-const props = defineProps(['roomTypeInfo'])
-const roomTypeInfo = ref(props.roomTypeInfo)
+const props = defineProps(['subjectInfo'])
+const subjectInfo = ref(props.subjectInfo)
 // 给表单填充数据
 for (const key in formSubject) {
-  formSubject[key] = roomTypeInfo.value[key]
+  formSubject[key] = subjectInfo.value[key]
 }
 
 // 更新课程类型信息

@@ -50,6 +50,8 @@ import {ref,reactive} from 'vue'
 import {loginApi} from "@/api/edu/login/login";
 import {useRouter } from 'vue-router'
 import { useStudentStore } from "@/store/modules/student"
+// 获取服务器路径
+const url = import.meta.env.VITE_APP_BASE_API
 // 获取路由对象
 const router = useRouter()
 // 获取学员在pinia对象
@@ -111,8 +113,8 @@ const page = reactive({
 })
 // 微信扫码登录
 const wxlogin = ()=> {
-  const url = 'http://dev01.sv1.k9s.run:2271/wechat/login'
-  window.open(url, 'newWindow', `resizable=yes, height=${page.height}, width=${page.width}, top=10%, left=10%, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no`)
+  const wxUrl = url+'wechat/login'
+  window.open(wxUrl, 'newWindow', `resizable=yes, height=${page.height}, width=${page.width}, top=10%, left=10%, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no`)
   window.addEventListener('message', resolveSocialLogin, false)
 }
 

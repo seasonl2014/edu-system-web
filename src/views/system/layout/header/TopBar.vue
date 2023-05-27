@@ -59,7 +59,7 @@
             <div style="float: left;width: 75px;padding: 10px;text-align: center;">
               <p>类型</p>
               <p style="font-size: 15px;font-weight: 600;line-height: 40px;">
-                <span>{{userInfo.role.name}}</span>
+                <span>{{userInfo.role!=null?userInfo.role.name:''}}</span>
               </p>
             </div>
             <!--展示用户角色类型 end-->

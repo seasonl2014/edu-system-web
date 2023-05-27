@@ -69,10 +69,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="价格" width="90">
+      <el-table-column label="现价-原价" width="100">
         <template #default="scope">
           <span><el-tag>{{ Number(scope.row.price) === 0 ? '免费' :
-              '¥' + scope.row.price.toFixed(2) }}</el-tag></span>
+              '¥' + scope.row.price.toFixed(2) }}</el-tag>
+            <el-tag type="danger">{{ Number(scope.row.originalPrice) === 0 ? '免费' :
+                '¥' + scope.row.originalPrice.toFixed(2) }}</el-tag>
+          </span>
         </template>
       </el-table-column>
 
@@ -127,10 +130,10 @@
 
       <el-table-column label="操作" width="220">
         <template #default="scope">
-          <el-button  text   @click="() => detailUpdateData(scope.row.id)" :loading="detailUpdateLoading.includes(scope.row.id)" icon="edit">编辑</el-button>
-          <el-button   text   @click="() => deleteTableData(scope.row.id)" :loading="deleteLoading.includes(scope.row.id)" icon="delete">删除</el-button>
+          <el-button  text title="编辑课程"   @click="() => editCourse(scope.row.id)" :loading="detailUpdateLoading.includes(scope.row.id)" icon="edit">编辑</el-button>
+          <el-button   text title="课程开发环境变量"   @click="() => environmenParamData(scope.row.id,scope.row.title)" :loading="deleteLoading.includes(scope.row.id)" icon="setting">参数</el-button>
           <el-button  text   title="上传课程资源"  :loading="detailUploadLoading.includes(scope.row.id)"    size="mini" icon="upload" @click="uploadResourceById(scope.row.id)">上传</el-button>
-          <el-button  text    @click="() => downloadTableData(scope.row.id)" :loading="downloadLoading.includes(scope.row.id)" icon="download">下载</el-button>
+          <el-button  text title="课程详情"    @click="() => detailCourse(scope.row.id,scope.row.title)" :loading="downloadLoading.includes(scope.row.id)" icon="view">详情</el-button>
         </template>
       </el-table-column>
 
@@ -168,7 +171,7 @@
     </template>
 
     <!--编辑课程组件 start-->
-    <EditCourse :CourseInfo="CourseInfo" @closeEditCourseForm="closeEditCourseForm" @success="success"/>
+    <EditCourse :courseInfo="courseInfo" @closeEditCourseForm="closeEditCourseForm" @success="success"/>
     <!--编辑课程组件 end-->
   </el-dialog>
   <!--编辑课程弹出框 end-->
@@ -182,6 +185,23 @@
     />
   <!--上传课程封面 弹出框 start-->
 
+  <!--设置开发环境参数 start-->
+  <EnvironmenParam
+      :course-id="courseId"
+      :course-title="courseTitle"
+      :environmenVisible="environmenVisible"
+      @onCancel="environmenCancel"
+  />
+  <!--设置开发环境参数 end-->
+  <!--课程详情 start-->
+  <DetailCourse
+      :course-id="courseId"
+      :course-title="courseTitle"
+      :detailVisible="detailVisible"
+      @onCancel="detailCancel"
+  />
+
+  <!--课程详情 end-->
 </template>
 
 <script setup lang="ts">
@@ -192,8 +212,10 @@ import { ElMessage } from 'element-plus'
 import AddCourse from "./components/AddCourse.vue"
 import EditCourse from "./components/EditCourse.vue"
 import UploadCover from "@/views/edu/course/components/UploadCover.vue"
+import EnvironmenParam from "@/views/edu/course/components/EnvironmenParam.vue"
+import DetailCourse from "@/views/edu/course/components/DetailCourse.vue"
 import {exportExcel} from "@/utils/exportExcel";
-import {delCourseApi, getCourseApi, getCourseListApi} from "@/api/edu/course/course";
+import {delCourseApi, getCourseApi, getCourseListApi, updateStatusApi} from "@/api/edu/course/course";
 // 服务器路径
 const url = import.meta.env.VITE_APP_BASE_API
 const state = reactive({
@@ -287,26 +309,50 @@ const success = ()=> {
 // 编辑课程弹出框状态
 const editCourseDialogFormVisible = ref(false)
 // 课程信息
-const CourseInfo = ref()
+const courseInfo = ref()
 // 编辑课程信息
 const editCourse = async (id:number)=> {
   const { data } = await getCourseApi(id)
-  CourseInfo.value = data.result
+  courseInfo.value = data.result
   editCourseDialogFormVisible.value = true
 }
 // 关闭编辑课程弹出框
 const closeEditCourseForm = ()=> {
   editCourseDialogFormVisible.value = false
 }
-// 删除课程信息
-const delCourse = async (id: number)=> {
-  const { data } = await delCourseApi(id)
-  if(data.status===200){
-    ElMessage.success('删除成功')
-    await loadData(state)
-  }else {
-    ElMessage.error('删除失败')
-  }
+// 设置课程参数弹出框状态
+const environmenVisible = ref(false)
+/**
+ * 设置课程开发环境参数
+ * @param id
+ * @param title
+ */
+const environmenParamData = async (id: number,title:string)=> {
+  courseTitle.value = `你正在给课程：“${title}”设置开发环境参数`
+  environmenVisible.value = true
+  courseId.value = id
+}
+/**
+ * 关闭设置课程开发参数
+ */
+const environmenCancel = ()=> {
+  environmenVisible.value = false
+}
+// 查看课程详情弹出框状态
+const detailVisible = ref(false)
+/**
+ * 查看课程详情
+ */
+const detailCourse = async (id: number,title:string)=> {
+  courseTitle.value = `你正在编辑课程：“${title}”的详情内容`
+  detailVisible.value = true
+  courseId.value = id
+}
+/**
+ * 关闭查看课程详情
+ */
+const detailCancel = ()=> {
+  detailVisible.value = false
 }
 // 导出列表
 const column = [
@@ -345,6 +391,15 @@ const uploadCover = (id:number,title:string)=> {
 // 关闭上传封面弹出框
 const uploadCoverCancel = ()=> {
   uploadCoverVisible.value = false
+  loadData(state)
+}
+
+/**
+ * 更改课程状态
+ */
+const updateStatus = async (courseId:number,status:string) => {
+  const { data } = await updateStatusApi(courseId,status)
+  ElMessage.success(data.message)
 }
 </script>
 

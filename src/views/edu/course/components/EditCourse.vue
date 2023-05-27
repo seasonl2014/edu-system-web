@@ -1,83 +1,109 @@
 <template>
 <el-form ref="ruleFormRef" :rules="rules" :model="formCourse" label-width="80px">
   <el-row>
-    <el-col :span="6">
-      <el-form-item label="所属楼层" prop="floorId">
-        <el-select v-model="formCourse.floorId" placeholder="请选择楼层" style="width: 100%;">
-          <el-option v-for="item in floorOptions" :key="item.id" :label="item.name" :value="item.id"/>
+    <el-col :span="8">
+      <el-form-item prop="subjectId" label="所属栏目">
+        <el-cascader
+            @change="selectParentChange"
+            :options="subjectTreeData"
+            clearable
+            :props="{ expandTrigger: 'hover', value: 'id',label: 'name',children: 'children' }"
+            v-model="pKeys"
+        />
+      </el-form-item>
+    </el-col>
+
+    <el-col :span="8">
+      <el-form-item prop="courseType" label="课程类型">
+        <el-select v-model="formCourse.courseType" placeholder="请选择课程类型">
+          <el-option label="新手入门" :value="0" />
+          <el-option label="新上好课" :value="1" />
+          <el-option label="技能提高" :value="2" />
+          <el-option label="实战开发" :value="3" />
         </el-select>
       </el-form-item>
     </el-col>
 
-    <el-col :span="6">
-      <el-form-item label="房间类型" prop="CourseTypeId">
-        <el-select v-model="formCourse.CourseTypeId" placeholder="请选择房间类型" style="width: 100%;">
-          <el-option v-for="item in CourseTypeOptions" :key="item.id" :label="item.name" :value="item.id"/>
+    <el-col :span="8">
+      <el-form-item prop="difficulty" label="课程难度">
+        <el-select v-model="formCourse.difficulty" placeholder="课程难度">
+          <el-option label="入门" :value="0" />
+          <el-option label="初级" :value="1" />
+          <el-option label="中级" :value="2" />
+          <el-option label="高级" :value="3" />
         </el-select>
       </el-form-item>
     </el-col>
 
-    <el-col :span="6">
-      <el-form-item label="房间名称" prop="CourseName">
-        <el-input v-model="formCourse.CourseName" placeholder="请输入房间名称"/>
-      </el-form-item>
-    </el-col>
-
-    <el-col :span="6">
-      <el-form-item label="房间号" prop="CourseNumber">
-        <el-input v-model="formCourse.CourseNumber" placeholder="请输入房间号"/>
-      </el-form-item>
-    </el-col>
-
-    <el-col :span="6">
-      <el-form-item label="床型" prop="bedType">
-        <el-input v-model="formCourse.bedType" placeholder="请输入床型"/>
-      </el-form-item>
-    </el-col>
-
-    <el-col :span="6">
-      <el-form-item label="宽带" prop="broadband">
-        <el-input v-model="formCourse.broadband" placeholder="请输入宽带"/>
-      </el-form-item>
-    </el-col>
-
-    <el-col :span="6">
-      <el-form-item label="标准价" prop="standardPrice">
-        <el-input v-model="formCourse.standardPrice" placeholder="请输入标准价"/>
-      </el-form-item>
-    </el-col>
-
-    <el-col :span="6">
-      <el-form-item label="会员价" prop="memberPrice">
-        <el-input v-model="formCourse.memberPrice" placeholder="请输入会员价"/>
+    <el-col :span="24">
+      <el-form-item label="长标题" prop="title">
+        <el-input v-model="formCourse.title" placeholder="请输入长标题"/>
       </el-form-item>
     </el-col>
 
     <el-col :span="24">
-      <el-form-item label="房间封面" prop="coverImg">
-        <!--上传图片控件 start-->
-        <el-upload v-model:file-list="fileList" :action="uploadURL" name="fileResource" list-type="picture-card" :auto-upload="true"
-                   :limit="1" :on-success="handleSuccess">
-          <el-icon><Plus /></el-icon>
-        </el-upload>
-        <!--上传图片控件 end-->
+      <el-form-item prop="shortTitle" label="短标题">
+        <el-input v-model="formCourse.shortTitle" placeholder="短标题" />
       </el-form-item>
     </el-col>
 
-    <el-col :span="24">
-      <el-form-item label="备注" prop="remarks">
-        <div style="border:1px solid #ccc">
-          <Toolbar style="border-bottom: 1px solid #ccc"
-                   :editor="editorRef"
-                   :defaultConfig="toolbarConfig"
-                   mode="simple"/>
-
-          <Editor style="height: 300px;overflow-y:hidden;"
-                  v-model="formCourse.remarks" :defaultConfig="editorConfig"
-                  mode="simple" @onCreated="handleCreated"/>
-        </div>
+    <el-col :span="12">
+      <el-form-item prop="price" label="现价">
+        <el-input-number
+            v-model="formCourse.price"
+            :min="1"
+            :max="1000"
+            style="width: 100%;"
+        />
       </el-form-item>
     </el-col>
+
+    <el-col :span="12">
+      <el-form-item prop="originalPrice" label="原价">
+        <el-input-number
+            v-model="formCourse.originalPrice"
+            :min="1"
+            :max="1000"
+            style="width: 100%;"
+        />
+      </el-form-item>
+    </el-col>
+
+    <el-col :span="12">
+      <el-form-item label="选择讲师" prop="teacherId">
+        <el-select v-model="formCourse.teacherId" placeholder="请选择讲师"  style="width: 100%;">
+          <el-option
+              v-for="teacher in teachers"
+              :key="teacher.id"
+              :label="teacher.name"
+              :value="teacher.id"
+
+          ></el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+
+    <el-col :span="12">
+      <el-form-item prop="lessonNum" label="课时">
+        <el-input-number
+            v-model="formCourse.lessonNum"
+            :min="1"
+            :max="1000"
+            style="width: 100%;"
+        />
+      </el-form-item>
+    </el-col>
+
+      <el-col :span="24">
+        <el-form-item prop="courseDesc" label="课程描述">
+          <el-input
+              v-model="formCourse.courseDesc"
+              type="textarea"
+              :rows="4"
+              placeholder="请输入描述"
+          />
+        </el-form-item>
+      </el-col>
 
   </el-row>
 </el-form>
@@ -88,91 +114,69 @@
 </template>
 
 <script setup lang="ts">
-import { ref,reactive,onMounted,shallowRef } from 'vue'
-import {ElMessage,UploadFile,UploadProps,UploadUserFile,FormInstance,FormRules} from 'element-plus'
-
-import '@wangeditor/editor/dist/css/style.css' // 引入 css
-import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
-import { IEditorConfig } from '@wangeditor/editor'
-import {editCourseApi, getAllCourseTypeListApi} from "@/api/edu/course/course";
-// 定义表单实例对象
+import {ref,reactive,onMounted} from 'vue'
+import { ElMessage,FormInstance,FormRules } from 'element-plus'
+import {editCourseApi} from "@/api/edu/course/course";
+import {getParentCategoryListApi} from "@/api/edu/subject/subject";
+import {getAllTeacherListApi} from "@/api/edu/teacher/teacher";
+// 所属栏目树形结构数据
+const subjectTreeData = ref<object[]>([])
+// 父节点数组
+const pKeys = ref<number[]>([])
+// 讲师数据
+const teachers = ref([])
+// 表单实例对象
 const ruleFormRef = ref<FormInstance>()
 // 表单约束规则对象
 const rules = reactive<FormRules>({
-  CourseName: [{ required: true,message: '房间名称不能为空',trigger: 'blur' }],
-  CourseNumber: [{ required: true,message: '房间号不能为空',trigger: 'blur' }],
-  bedType: [{ required: true,message: '床型不能为空',trigger: 'blur' }],
-  broadband: [{required: true,message: '宽带不能为空',trigger: 'blur'}],
-  standardPrice: [{ required: true,message: '标准价不能为空',trigger: 'blur'}],
-  memberPrice: [{ required: true,message: '会员价不能为空',trigger: 'blur' }],
-  CourseTypeId: [{ required: true,message: '房间类型ID不能为空',trigger: 'blur' }],
-  floorId: [{ required: true,message: '楼层ID不能为空',trigger: 'blur' }],
-  coverImg: [{required: true,message: '封面不能为空',trigger: 'blur'}],
-  remarks: [{required: true,message: '备注不能为空',trigger: 'blur'}]
+  teacherId: [{ required: true,message: '请选择讲师',trigger: 'blur' }],
+  subjectId: [{ required: true,message: '课程栏目不能为空',trigger: 'blur' }],
+  courseType: [{ required: true,message: '课程类型不能为空',trigger: 'blur' }],
+  difficulty: [{required: true,message: '课程难度不能为空',trigger: 'blur'}],
+  title: [{ required: true,message: '长标题不能为空',trigger: 'blur'}],
+  shortTitle: [{ required: true,message: '短标题不能为空',trigger: 'blur' }],
+  price: [{ required: true,message: '课程现价不能为空',trigger: 'blur' }],
+  courseDesc: [{ required: true,message: '课程描述不能为空',trigger: 'blur' }],
+  lessonNum: [{required: true,message: '课时不能为空',trigger: 'blur'}],
+  originalPrice: [{required: true,message: '课程原价不能为空',trigger: 'blur'}]
 })
-// 定义服务器路径
-const url = import.meta.env.VITE_APP_BASE_API
-// 图片上传到服务器的路径
-const uploadURL = url+'user/userIcon'
-// 编辑器实例
-const editorRef = shallowRef()
-const toolbarConfig = {}
-const editorConfig: Partial<IEditorConfig> = { placeholder: '请输入内容...',MENU_CONF:{}}
-const handleCreated = (editor)=> {
-  editorRef.value =editor
-}
-
-// 配置编辑器上传图片
-editorConfig.MENU_CONF['uploadImage'] = {
-  server: uploadURL,
-  fieldName: 'fileResource',
-  // 自定义插入图片
-  customInsert(res:any,insertFn){
-    insertFn(url+'uploadFile/'+res.result.userIcon,"上传图片",url+'uploadFile/'+res.result.userIcon)
-  }
-}
-
 // 定义事件
 const emit = defineEmits(['closeEditCourseForm','success'])
-
 // 按钮状态
 const subLoading = ref(false)
 // 表单数据对象
 const formCourse = reactive({
-  id: 0,
-  CourseName: '',
-  CourseNumber: '',
-  bedType: '',
-  broadband: '免费wifi',
-  standardPrice: '',
-  memberPrice: '',
-  CourseTypeId: '',
-  floorId: '',
-  coverImg: '',
-  remarks: ''
+  id: 0, // 课程ID
+  subjectId: 0,// 所属栏目
+  subjectParentId: 0,// 一级栏目
+  teacherId: 0,// 讲师ID
+  title: '',// 长标题
+  shortTitle: '',// 短标题
+  price: 0,// 现价
+  originalPrice: 0,// 原价
+  lessonNum: 0,// 课时
+  courseDesc: '',// 课程描述
+  courseType: 0,// 课程类型
+  difficulty: 0 // 课程难度
 })
+
 // 获取父组件传过来的CourseInfo对象
-const props = defineProps(['CourseInfo'])
-const CourseInfo = ref(props.CourseInfo)
+const props = defineProps(['courseInfo'])
+const courseInfo = ref(props.courseInfo)
 // 给表单填充数据
 for (const key in formCourse) {
-  formCourse[key] = CourseInfo.value[key]
+  formCourse[key] = courseInfo.value[key]
+  pKeys.value = [courseInfo.value['subjectParentId'], courseInfo.value['subjectId']]
 }
-
-// 处理回显封面
-const fileList = ref<UploadUserFile[]>([
-    {
-      name: '封面图',
-      url: url+'uploadFile/'+formCourse.coverImg
-    }
-])
-
-// 更新房间信息
-const editCourse = async (formEl: FormInstance |undefined)=> {
+/**
+ * 新增课程信息
+ * @param formEl
+ */
+const editCourse = async (formEl: FormInstance | undefined)=> {
   if(!formEl)return
   await formEl.validate(async (valid,fields)=> {
     subLoading.value = true
-    if(valid){
+    if (valid){
       const { data } = await editCourseApi(formCourse)
       if(data.status === 200){
         ElMessage.success(data.message)
@@ -186,23 +190,51 @@ const editCourse = async (formEl: FormInstance |undefined)=> {
   })
   subLoading.value = false
 }
-// 定义房间类型下拉框选择项
-const CourseTypeOptions = ref<object[]>([])
-// 获取所有房间类型信息
-const getAllCourseTypeList = async ()=> {
-  const { data } = await getAllCourseTypeListApi()
-  CourseTypeOptions.value = data.result
-}
-// 定义楼层下拉框选择项
-const floorOptions = ref<object[]>([])
 
-onMounted(()=> {
-  getAllCourseTypeList()
-})
-// 取消表单
+/**
+ * 取消表单
+ */
 const close = ()=>{
   emit('closeEditCourseForm')
 }
+
+/**
+ * 获取树形课程栏目
+ */
+const getParentCategoryList = async() => {
+  const { data } = await getParentCategoryListApi()
+  if (data.result.length > 0) {
+    subjectTreeData.value = data.result
+  } else {
+    subjectTreeData.value = []
+  }
+}
+/**
+ * 父级分类中改变
+ */
+const selectParentChange = () => {
+  const len = pKeys.value.length
+  if (len > 0) {
+    formCourse.subjectParentId = pKeys.value[0]
+    formCourse.subjectId = pKeys.value[len - 1]
+  } else {
+    formCourse.subjectId = 0
+    formCourse.subjectParentId = 0
+  }
+}
+
+/**
+ * 获取所有讲师列表
+ */
+const getAllTeacherList = async ()=> {
+  const { data } = await getAllTeacherListApi()
+  teachers.value = data.result
+}
+
+onMounted(()=> {
+  getParentCategoryList()
+  getAllTeacherList()
+})
 </script>
 
 <style scoped>

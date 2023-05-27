@@ -220,7 +220,7 @@
             <div class="down" v-for="item in courseDataList">
               <div class="source">
                 <span class="downloadCourse"><el-icon size="18"><Download /></el-icon> {{item.name}}</span>
-                <el-button v-if="studentToken!=null && studentToken!=''" color="#e6a23c" style="color: #fff;"  @click="downloadBtn(item.id)" :loading="downLoading">下载资料</el-button>
+                <el-button v-if="studentToken!=null && studentToken!=''" color="#e6a23c" style="color: #fff;"  @click="downloadBtn(item.id)" :loading="downLoading==item.id">下载资料</el-button>
                 <span v-else><el-tag>请先登录</el-tag></span>
               </div>
             </div>
@@ -278,13 +278,13 @@ const route = useRoute()
 const {studentToken} = useStudentStore()
 console.log('详情页studentToken:',studentToken)
 // 下载资料按钮状态
-const downLoading = ref(false)
+const downLoading = ref()
 // 点击下载资料
 const downloadBtn = async (courseDataId:number)=> {
-  downLoading.value = true
+  downLoading.value = courseDataId
   const { data } = await downloadCourseDataApi(courseDataId)
   if(data.status === 200){
-    window.location.href = import.meta.env.VITE_APP_BASE_API+"edu/oss/downFileFromOss?fileName="+data.result.downloadLink;
+    window.location.href = import.meta.env.VITE_APP_BASE_API+"aliVod/upload/downFileFromOss?fileName="+data.result.downloadAddress+"&studentToken="+studentToken;
   }else {
     ElMessageBox.alert('温馨提示',data.message)
   }

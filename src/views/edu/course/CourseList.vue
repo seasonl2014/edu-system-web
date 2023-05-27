@@ -130,10 +130,10 @@
 
       <el-table-column label="操作" width="220">
         <template #default="scope">
-          <el-button  text title="编辑课程"   @click="() => editCourse(scope.row.id)" :loading="detailUpdateLoading.includes(scope.row.id)" icon="edit">编辑</el-button>
-          <el-button   text title="课程开发环境变量"   @click="() => environmenParamData(scope.row.id,scope.row.title)" :loading="deleteLoading.includes(scope.row.id)" icon="setting">参数</el-button>
-          <el-button  text   title="上传课程资源"  :loading="detailUploadLoading.includes(scope.row.id)"    size="mini" icon="upload" @click="uploadResourceById(scope.row.id)">上传</el-button>
-          <el-button  text title="课程详情"    @click="() => detailCourse(scope.row.id,scope.row.title)" :loading="downloadLoading.includes(scope.row.id)" icon="view">详情</el-button>
+          <el-button  link title="编辑课程"   @click="() => editCourse(scope.row.id)" :loading="detailUpdateLoading.includes(scope.row.id)" icon="edit">编辑</el-button>
+          <el-button   link title="课程开发环境变量"   @click="() => environmenParamData(scope.row.id,scope.row.title)" :loading="deleteLoading.includes(scope.row.id)" icon="setting">参数</el-button>
+          <el-button  link   title="上传课程资源"  :loading="detailUploadLoading.includes(scope.row.id)"    size="mini" icon="upload" @click="courseDataUpload(scope.row.id,scope.row.title)">上传</el-button>
+          <el-button  link title="课程详情"    @click="() => detailCourse(scope.row.id,scope.row.title)" :loading="downloadLoading.includes(scope.row.id)" icon="view">详情</el-button>
         </template>
       </el-table-column>
 
@@ -200,8 +200,16 @@
       :detailVisible="detailVisible"
       @onCancel="detailCancel"
   />
-
   <!--课程详情 end-->
+
+  <!--课程资料 start-->
+  <CourseData
+      :course-id="courseId"
+      :course-title="courseTitle"
+      :courseDataVisible="courseDataVisible"
+      @onCancel="courseDataCancel"
+  />
+  <!--课程资料 end-->
 </template>
 
 <script setup lang="ts">
@@ -214,6 +222,7 @@ import EditCourse from "./components/EditCourse.vue"
 import UploadCover from "@/views/edu/course/components/UploadCover.vue"
 import EnvironmenParam from "@/views/edu/course/components/EnvironmenParam.vue"
 import DetailCourse from "@/views/edu/course/components/DetailCourse.vue"
+import CourseData from "@/views/edu/course/components/CourseData.vue"
 import {exportExcel} from "@/utils/exportExcel";
 import {delCourseApi, getCourseApi, getCourseListApi, updateStatusApi} from "@/api/edu/course/course";
 // 服务器路径
@@ -353,6 +362,23 @@ const detailCourse = async (id: number,title:string)=> {
  */
 const detailCancel = ()=> {
   detailVisible.value = false
+}
+
+// 课程资料弹出层状态
+const courseDataVisible =ref(false)
+/**
+ * 关闭课程资料弹出层
+ */
+const courseDataCancel = ()=> {
+  courseDataVisible.value = false
+}
+/**
+ * 上传课程资料
+ */
+const courseDataUpload = async (id: number,title:string)=> {
+  courseTitle.value = `你正在给课程：“${title}”上传资料`
+  courseDataVisible.value = true
+  courseId.value = id
 }
 // 导出列表
 const column = [

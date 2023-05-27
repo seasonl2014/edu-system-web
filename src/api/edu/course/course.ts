@@ -82,3 +82,20 @@ export function getEnvironmenListApi(courseId:number) {
         method: 'get'
     })
 }
+
+// 获取课程资料
+export function getCourseDataListApi(courseId:number) {
+    return request({
+        url: `course/getCourseDataList/${courseId}`,
+        method: 'get'
+    })
+}
+
+// 保存课程配套资料
+export function saveCourseDataApi(data:object) {
+    return request({
+        url: 'course/saveOrUpdateCourseData',
+        method: 'post',
+        data
+    })
+}

@@ -55,7 +55,7 @@ const rules = reactive<FormRules>({
 // 定义服务器路径
 const url = import.meta.env.VITE_APP_BASE_API
 // 编辑器图片上传到服务器的路径
-const uploadURL = url+"aliVod/upload/uploadEdit"
+const uploadURL = url+"aliVod/upload/uploadEditor"
 // 编辑器实例
 const editorRef = shallowRef()
 const toolbarConfig = {}
@@ -69,7 +69,7 @@ editorConfig.MENU_CONF['uploadImage'] = {
   fieldName: 'fileResource',
   // 自定义插入图片
   customInsert(res:any,insertFn){
-    insertFn(res.result.userIcon,"上传图片",res.result.userIcon)
+    insertFn(res.result.urlPath,"上传图片",res.result.urlPath)
   }
 }
 /**

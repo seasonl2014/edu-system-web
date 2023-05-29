@@ -99,3 +99,11 @@ export function saveCourseDataApi(data:object) {
         data
     })
 }
+
+// 获取进度条数据
+export function getPercentApi(fileKey:string) {
+    return request({
+        url: `aliVod/upload/getUploadPercent/${fileKey}`,
+        method: 'get'
+    })
+}

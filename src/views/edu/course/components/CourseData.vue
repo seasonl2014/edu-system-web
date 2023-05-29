@@ -33,7 +33,7 @@
       >
         <template #default="{row}">
           <el-input v-if="row.edit" v-model="row.downloadAddress" placeholder="下载地址如：course.zip" />
-          <span v-else>{{ row.downloadAddress }} <el-progress v-show="row.progress" :percentage="row.percentag" /></span>
+          <span v-else>{{ row.downloadAddress }} <el-progress v-show="row.progress" :percentage="percentag" /></span>
         </template>
       </el-table-column>
       <el-table-column
@@ -58,19 +58,21 @@
           </template>
           <span v-else style="display: flex;justify-content:space-around;">
             <el-button link @click="toggle(row.id)">编辑</el-button>
-<!--            <el-button type="text" @click="upLoad(row.id)">上传</el-button>-->
             <!--上传资料 start-->
              <el-upload
+                 ref="uploadRef"
                  class="upload-demo"
                  name="fileResource"
+                 :on-change="onChange"
                  :action="uploadURL"
                  :before-upload="beforeUpload"
                  :limit="1"
-                 :data="{courseDataId:row.id}"
+                 :data="{courseDataId:row.id,fileKey:fileKey}"
                  :show-file-list="false"
                  :on-success="FileOnSuccess"
              >
-                <el-button link>上传</el-button>
+                <el-button link v-show="selectBtn" @click="submitUpload(row.id)">上传</el-button>
+                <el-button link v-show="uploadBtn">开始上传</el-button>
               </el-upload>
             <!--上传资料 end-->
             <el-popconfirm title="是否要删除此行？" @confirm="remove(row.id)">
@@ -89,7 +91,7 @@
       新增课程资料
     </el-button>
     <div class="dialog-button-wrap">
-      <el-button @click="close">取消</el-button>
+      <el-button @click="onCancel">取消</el-button>
       <el-button :loading="subLoading" type="primary" @click="saveCourseData">保存</el-button>
     </div>
   </el-dialog>
@@ -97,9 +99,12 @@
 
 <script setup lang="ts">
 import { ref,watch,h } from 'vue'
-import {ElMessage,UploadProps } from 'element-plus'
-import {getCourseDataListApi, saveCourseDataApi} from "@/api/edu/course/course";
+import {ElMessage,UploadProps,UploadInstance,UploadFile,UploadFiles } from 'element-plus'
+import {getCourseDataListApi, getPercentApi, saveCourseDataApi} from "@/api/edu/course/course";
+import {Md5} from 'ts-md5/dist/md5';
 const props = defineProps(['courseTitle','courseDataVisible','courseId'])
+// 文件MD5
+const fileKey = ref('')
 // 服务器路径
 const url = import.meta.env.VITE_APP_BASE_API
 // 课程资料上传到服务器的路径
@@ -146,7 +151,8 @@ const newTableData = () => {
     isNew: true,
     progress: false,
     percentag: 0,// 进度条
-    courseId: props.courseId
+    courseId: props.courseId,
+    fileKey: ''
   })
 
   newIndex.value--
@@ -182,29 +188,85 @@ const toggle = (key: number) => {
   target.edit = !target.edit
 }
 
+// 上传组件实例
+const uploadRef = ref<UploadInstance>()
+// 选择按钮状态
+const selectBtn = ref(true)
+// 上传按钮状态
+const uploadBtn = ref(false)
+//课程资料ID
+const courseDataId = ref(0)
+/**
+ * 定时查询上传进度 1秒查一次
+ */
+let intervalId: any = null
+/**
+ * 选择需要上传的资料
+ */
+const submitUpload = (key:number)=> {
+  courseDataId.value = key
+  console.log('选择需要上传的资料key：',key)
+  // 禁用保存按钮
+  subLoading.value = true
+}
+/**
+ * 选中文件时
+ */
+const onChange = (uploadFile: UploadFile, uploadFiles: UploadFiles)=> {
+  const target: any = tableData.value.find(item => item.id === courseDataId.value)
+  // 显示进度条
+  target.progress = true
+  // 文件说明
+  // target.downloadAddress = `文件名称：${uploadFile.name} ，文件大小：${uploadFile.size}`
+  intervalId =  window.setInterval(getUploadPercent, 1000)
+}
 // 进度条对象
 const percentag = ref(0)
 /**
  * 上传对应资料
  */
 const upLoading = (key: number,urlFile:string) => {
-  const target: any = tableData.value.find(item => item.id === key)
-  target._originalData = { ...target }
-  target.progress = true
-  target.percentag = percentag.value
+  const target: any = tableData.value.find(item => item.id === courseDataId.value)
   target.downloadAddress = urlFile
+  target.fileKey = fileKey.value
+  // 隐藏进度条
+  target.progress = false
+  console.log('上传成功后返回的信息target.downloadAddress：',target.downloadAddress)
+}
+
+
+/**
+ * 获取进度条
+ */
+const getUploadPercent= async ()=>{
+  const {data} = await getPercentApi(fileKey.value)
+  if(data.result.percent >= 100){
+    window.clearInterval(intervalId)
+    percentag.value = 100
+  }else if(data.result.percent==-1){
+    window.clearInterval(intervalId)
+  }else {
+    percentag.value = data.result.percent
+  }
 }
 
 /**
  * beforeUpload
  */
 const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  console.log("rawFile",rawFile)
+
+  console.log("uploadRef----------------:",uploadRef.value)
+  // 文件标志
+  const fileDetails = rawFile.name+rawFile.size+rawFile.type+rawFile.lastModified;
+  //使用当前文件的信息用md5加密生成一个key 这个加密是根据文件的信息来加密的  如果相同的文件 加的密还是一样的
+  const key = Md5.hashStr(fileDetails);
+  console.log('文件加密后key:',key)
+  fileKey.value = key
   if (rawFile.type !== 'application/zip') {
     ElMessage.error('上传文件失败，只能上传zip格式的文件')
     return false
-  } else if (rawFile.size / 1024 / 1024 > 50) {
-    ElMessage.error('上传的文件大于 50MB!')
+  } else if (rawFile.size / 1024 / 1024 > 500) {
+    ElMessage.error('上传的文件大于 500MB!')
     return false
   }
   return true
@@ -213,8 +275,9 @@ const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
  * 文件上传成功
  */
 const FileOnSuccess=(response: any, file: any, fileList: any)=>{
-  upLoading(response.result.courseDataId,response.result.urlPath)
-  console.info("文件上传成功后：",response)
+ upLoading(response.result.courseDataId,response.result.urlPath)
+  // 打开保存按钮
+  subLoading.value = false
 }
 /**
  * 删除

@@ -86,7 +86,7 @@
           width="80"
       >
         <template #default="scope">
-          <el-tag v-if="scope.row.lev!=1&&scope.row.videoSourceId!=null" effect="dark" type="success" style="cursor: pointer;" @click="playVideoByVideoId(scope.row.videoSourceId,scope.row.title)">播放</el-tag>
+          <el-tag v-if="scope.row.lev!=1&&scope.row.videoSourceId!=null" effect="dark" type="success" style="cursor: pointer;" @click="playVideoByVideoId(scope.row.courseId,scope.row.id)">预览</el-tag>
           <el-tag v-if="scope.row.videoSourceId===null&&scope.row.lev!=1" effect="plain" type="warning">未上传</el-tag>
         </template>
       </el-table-column>
@@ -112,7 +112,7 @@
             </span>
           </template>
           <span v-else>
-            <el-button type="text" @click="toggle(row.id)">编辑</el-button>
+            <el-button link @click="toggle(row.id)">编辑</el-button>
             <el-popconfirm title="是否要删除此行？" @confirm="remove(row)">
               <template #reference>
                 <el-button link >删除</el-button>
@@ -146,11 +146,23 @@
       :get-percent="getBatchUploadPercent"
   />
   <!--批量上传课程小节视频 end-->
+
+
+  <!--重传课程单个小节视频 start-->
+  <UploadVideoForm
+      v-if="uploadVideoFormVisible"
+      :visible="uploadVideoFormVisible"
+      :values="videoData"
+      @on-cancel="() => uploadVideoFormCancel()"
+      @get-percent="() => getUploadPercent()"
+  />
+  <!--重传课程单个小节视频 end-->
 </template>
 
 <script setup lang="ts">
 import {ref,watch} from 'vue'
 import {ElMessage} from 'element-plus'
+import {useRouter} from 'vue-router'
 import {
   delEduChapterApi,
   delEduVideoApi,
@@ -160,6 +172,7 @@ import {
   updateVideoApi
 } from "@/api/edu/course/course";
 import BatchUploadVideoForm from "@/views/edu/course/components/BatchUploadVideoForm.vue"
+import UploadVideoForm from "@/views/edu/course/components/UploadVideoForm.vue"
 import {formatDuration} from "@/utils/date";
 const props = defineProps(['courseTitle','classHourVisible','courseId'])
 const emit = defineEmits(['onCancel'])
@@ -361,11 +374,52 @@ const remove = async (val:any) => {
  */
 // 重传视频弹出框状态
 const uploadVideoFormVisible = ref(false)
+// 课程小节数据对象
+const videoData = ref<object>()
 const uploadVideoById = async (id:number)=> {
   const {data} = await getVideoApi(id)
   if(data.status === 200){
     uploadVideoFormVisible.value = true
+    videoData.value = data.result
   }
+}
+/**
+ * 取消上传课程小节视频 弹框
+ */
+const uploadVideoFormCancel = () => {
+  uploadVideoFormVisible.value = false
+  getChapterTreeList()
+}
+
+/**
+ * 获取上传进度条
+ */
+const getUploadPercent = async() => {
+  const {data} = await getUploadPercentApi((videoData.value as any).id)
+  if (data.status === 200) {
+    return data.result.percent
+  } else {
+    return 0
+  }
+}
+
+/**
+ * 预览视频
+ * @param courseId 课程ID
+ * @param videoId  视频ID
+ */
+// 路由对象
+const router = useRouter()
+const playVideoByVideoId = (courseId:number,videoId:number)=> {
+  let { href } =  router.resolve({
+    path: '/edu/play',
+    query: {
+      courseId:courseId,
+      videoId:videoId
+    }
+  })
+  window.open(href, '_blank')
+
 }
 </script>
 

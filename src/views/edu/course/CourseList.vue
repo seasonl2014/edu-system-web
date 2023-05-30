@@ -134,6 +134,7 @@
           <el-button   link title="课程开发环境变量"   @click="() => environmenParamData(scope.row.id,scope.row.title)" :loading="deleteLoading.includes(scope.row.id)" icon="setting">参数</el-button>
           <el-button  link   title="上传课程资源"  :loading="detailUploadLoading.includes(scope.row.id)"    size="mini" icon="upload" @click="courseDataUpload(scope.row.id,scope.row.title)">上传</el-button>
           <el-button  link title="课程详情"    @click="() => detailCourse(scope.row.id,scope.row.title)" :loading="downloadLoading.includes(scope.row.id)" icon="view">详情</el-button>
+          <el-button  link title="课程大纲"    @click="() => classHour(scope.row.id,scope.row.title)" :loading="downloadLoading.includes(scope.row.id)" icon="VideoPlay">大纲</el-button>
         </template>
       </el-table-column>
 
@@ -210,6 +211,14 @@
       @onCancel="courseDataCancel"
   />
   <!--课程资料 end-->
+  <!--课程大纲 start-->
+  <ClassHour
+      :course-id="courseId"
+      :course-title="courseTitle"
+      :classHourVisible="classHourVisible"
+      @onCancel="classHourCancel"
+  />
+  <!--课程大纲 end-->
 </template>
 
 <script setup lang="ts">
@@ -223,6 +232,7 @@ import UploadCover from "@/views/edu/course/components/UploadCover.vue"
 import EnvironmenParam from "@/views/edu/course/components/EnvironmenParam.vue"
 import DetailCourse from "@/views/edu/course/components/DetailCourse.vue"
 import CourseData from "@/views/edu/course/components/CourseData.vue"
+import ClassHour from "@/views/edu/course/components/ClassHour.vue"
 import {exportExcel} from "@/utils/exportExcel";
 import {delCourseApi, getCourseApi, getCourseListApi, updateStatusApi} from "@/api/edu/course/course";
 // 服务器路径
@@ -379,6 +389,22 @@ const courseDataUpload = async (id: number,title:string)=> {
   courseTitle.value = `你正在给课程：“${title}”上传资料`
   courseDataVisible.value = true
   courseId.value = id
+}
+
+/**
+ * 课程大纲
+ */
+const classHourVisible = ref(false)
+const classHour = (id: number,title:string)=> {
+  courseTitle.value = `你正在给课程：“${title}”创建课程大纲`
+  classHourVisible.value = true
+  courseId.value = id
+}
+/**
+ * 关闭课程大纲弹出层
+ */
+const classHourCancel = ()=> {
+  classHourVisible.value = false
 }
 // 导出列表
 const column = [

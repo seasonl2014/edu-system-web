@@ -107,3 +107,59 @@ export function getPercentApi(fileKey:string) {
         method: 'get'
     })
 }
+
+// 获取树形课时
+export function getChapterTreeListApi(params:object) {
+    return request({
+        url: 'course/chapterTree',
+        method: 'get',
+        params
+    })
+}
+// 保存或更新课程大纲
+export function setEduChapterApi(params:object) {
+    return request({
+        url: 'course/addEduChapter',
+        method: 'post',
+        params
+    })
+}
+
+// 获取大章信息
+export function getChapterApi(id:number) {
+    return request({
+        url: `course/chapter/${id}`,
+        method: 'get'
+    })
+}
+
+// 编辑课程小节
+export function updateVideoApi(data:object) {
+    return request({
+        url: 'course/updateVideo',
+        method: 'put',
+        data
+    })
+}
+// 删除课程大纲小节
+export function delEduVideoApi(id:number) {
+    return request({
+        url: `course/delEduVideo/${id}`,
+        method: 'delete'
+    })
+}
+
+// 删除课程大纲大章
+export function delEduChapterApi(id:number) {
+    return request({
+        url: `course/delEduChapter/${id}`,
+        method: 'delete'
+    })
+}
+// 根据课程小节ID获取信息
+export function getVideoApi(id:number) {
+    return request({
+        url: `course/video/${id}`,
+        method: 'get'
+    })
+}

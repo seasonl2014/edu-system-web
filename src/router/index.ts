@@ -176,6 +176,18 @@ export const asyncRoutes = [
                 },
                 component: ()=> import('@/views/edu/course/CourseList.vue')
             },
+
+            {
+                path: 'banner',
+                name: 'Banner',
+                meta: {
+                    title: '轮播图管理',
+                    icon: 'Clock',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/banner/BannerList.vue')
+            },
+
         ]
     },
     {

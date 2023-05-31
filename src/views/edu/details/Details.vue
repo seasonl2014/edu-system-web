@@ -154,7 +154,7 @@
                 <div class="box-bd">
                   <div class="tea-inst">
                     <div class="medias">
-                      <a href="https://www.imooc.com/t/6726286" data-href="https://www.imooc.com/space/teacher/id/6726286" target="_blank">
+                      <a href="#">
                         <img src="@/static/img/teacher.png" class="media">
                         <span class="name">{{courseInfo.eduTeacher!=null?courseInfo.eduTeacher.name:''}}</span>
                         <i class="ic sz-imooc"></i>

@@ -43,9 +43,9 @@
       </template>
       <!--未登录 end-->
 
-      <li class="edu-nav-item">
+<!--      <li class="edu-nav-item">
         <router-link to="/home" target="_blank">我是讲师</router-link>
-      </li>
+      </li>-->
 
     </ul>
 

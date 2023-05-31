@@ -2,14 +2,14 @@
 <el-form ref="ruleFormRef" :rules="rules" :model="formVipType" label-width="80px">
   <el-row>
     <el-col :span="12">
-      <el-form-item label="楼层号" style="width: 100%" prop="VipTypeNo">
-        <el-input-number v-model="formVipType.VipTypeNo" placeholder="请输入楼层号"/>
+      <el-form-item label="VIP售价" style="width: 100%" prop="vipMoney">
+        <el-input-number v-model="formVipType.vipMoney" placeholder="请输入VIP售价"/>
       </el-form-item>
     </el-col>
 
     <el-col :span="12">
-      <el-form-item label="楼层名称" prop="VipTypeName">
-        <el-input v-model="formVipType.VipTypeName" placeholder="请输入楼层名称"/>
+      <el-form-item label="VIP名称" prop="vipName">
+        <el-input v-model="formVipType.vipName" placeholder="请输入VIP名称"/>
       </el-form-item>
     </el-col>
 
@@ -36,8 +36,8 @@ import {editVipTypeApi} from "@/api/edu/viptype/vipType";
 const ruleFormRef = ref<FormInstance>()
 // 表单约束规则
 const rules = reactive<FormRules>({
-  VipTypeNo: [{ required: true,message: '楼层号不能为空',trigger: 'blur' }],
-  VipTypeName: [{ required: true,message: '楼层名称不能为空',trigger: 'blur' }]
+  vipMoney: [{ required: true,message: 'VIP售价不能为空',trigger: 'blur' }],
+  vipName: [{ required: true,message: 'VIP名称不能为空',trigger: 'blur' }]
 })
 // 定义事件
 const emit = defineEmits(['closeEditVipTypeForm','success'])
@@ -46,8 +46,8 @@ const subLoading = ref(false)
 // 表单数据对象
 const formVipType = reactive({
   id:0,
-  VipTypeNo:1,
-  VipTypeName: '',
+  vipMoney:0,
+  vipName: '',
   remarks: ''
 })
 // 获取父组件传过来的VipTypeInfo对象

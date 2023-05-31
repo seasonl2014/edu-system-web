@@ -73,7 +73,7 @@
         <template #default="scope">
           <el-button size="small" @click="editVipType(scope.row.id)">编辑</el-button>
           <el-popconfirm confirm-button-text="确定" cancel-button-text="取消" :icon="Delete"
-          icon-color="#626AEF" :title="'确定删除名为“'+scope.row.VipTypeName+'”的楼层吗'"
+          icon-color="#626AEF" :title="'确定删除名为“'+scope.row.VipTypeName+'”的VIP类型吗'"
           @confirm="delVipType(scope.row.id)">
             <template #reference>
               <el-button size="small" type="danger">删除</el-button>
@@ -92,7 +92,7 @@
   <!--分页插件 end-->
 </el-card>
 
-  <!--新增楼层弹出框 start-->
+  <!--新增VIP类型弹出框 start-->
   <el-dialog align-center v-model="addVipTypeDialogFormVisible" width="42%" destroy-on-close>
     <template #header="{ close,titleId,titleClass }">
       <div class="my-header">
@@ -100,25 +100,25 @@
         <h1>添加VIP类别</h1>
       </div>
     </template>
-    <!--新增楼层组件 start-->
+    <!--新增VIP类型组件 start-->
     <AddVipType @closeAddVipTypeForm="closeAddVipTypeForm" @success="success"/>
-    <!--新增楼层组件 end-->
+    <!--新增VIP类型组件 end-->
   </el-dialog>
-  <!--新增楼层弹出框 end-->
+  <!--新增VIP类型弹出框 end-->
 
-  <!--编辑楼层弹出框 start-->
+  <!--编辑VIP类型弹出框 start-->
   <el-dialog align-center v-model="editVipTypeDialogFormVisible" width="42%" destroy-on-close>
     <template #header="{ close,titleId,titleClass }">
       <div class="my-header">
         <el-icon size="26px"><EditPen/></el-icon>
-        <h1>编辑楼层</h1>
+        <h1>编辑VIP类型</h1>
       </div>
     </template>
-    <!--编辑楼层组件 start-->
+    <!--编辑VIP类型组件 start-->
     <EditVipType :VipTypeInfo="VipTypeInfo" @closeEditVipTypeForm="closeEditVipTypeForm" @success="success"/>
-    <!--编辑楼层组件 end-->
+    <!--编辑VIP类型组件 end-->
   </el-dialog>
-  <!--编辑楼层弹出框 end-->
+  <!--编辑VIP类型弹出框 end-->
 
 </template>
 
@@ -146,7 +146,7 @@ const state = reactive({
   loading: false
 })
 
-// 获取楼层列表数据
+// 获取VIP类型列表数据
 const loadData = async (state: any)=> {
   state.loading = true
   // 先清空表格数据
@@ -198,12 +198,12 @@ const Nindex = (index: number)=> {
   return index+1+(page-1)*pageSize
 }
 
-// 添加楼层弹出框
+// 添加VIP类型弹出框
 const addVipTypeDialogFormVisible = ref(false)
 const addVipType = ()=> {
   addVipTypeDialogFormVisible.value = true
 }
-// 关闭新增楼层弹出框
+// 关闭新增VIP类型弹出框
 const closeAddVipTypeForm = ()=> {
   addVipTypeDialogFormVisible.value = false
 }
@@ -215,21 +215,21 @@ const success = ()=> {
   closeEditVipTypeForm()
 }
 
-// 编辑楼层弹出框状态
+// 编辑VIP类型弹出框状态
 const editVipTypeDialogFormVisible = ref(false)
-// 编辑楼层信息
+// 编辑VIP类型信息
 const VipTypeInfo = ref()
 const editVipType =  async (id:number)=> {
   const { data } = await getVipTypeApi(id)
   VipTypeInfo.value = data.result
   editVipTypeDialogFormVisible.value = true
 }
-// 关闭编辑楼层弹出框
+// 关闭编辑VIP类型弹出框
 const closeEditVipTypeForm = ()=> {
   editVipTypeDialogFormVisible.value = false
 }
 
-// 删除楼层信息
+// 删除VIP类型信息
 const delVipType = async (id:number)=> {
   const { data } = await delVipTypeApi(id)
   if(data.status===200){
@@ -241,18 +241,18 @@ const delVipType = async (id:number)=> {
 }
 // 导出列表
 const column = [
-  {name: 'id',label: '楼层ID'},
-  {name: 'VipTypeNo',label: '楼层号'},
-  {name: 'VipTypeName',label: '楼层名称'},
+  {name: 'id',label: 'VIP类型ID'},
+  {name: 'VipTypeNo',label: 'VIP类型号'},
+  {name: 'VipTypeName',label: 'VIP类型名称'},
   {name: 'remarks',label: '备注'}
 ]
 
-// 导出楼层信息
+// 导出VIP类型信息
 const exportExcelAction = ()=> {
   exportExcel({
     column,
     data: state.tableData,
-    filename: '楼层信息数据',
+    filename: 'VIP类型信息数据',
     format: 'xlsx',
     autowidth: true
   })

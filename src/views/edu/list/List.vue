@@ -117,9 +117,11 @@
 import TopHeader from "@/views/edu/common/header/TopHeader.vue";
 import Search from "@/views/edu/common/search/Search.vue";
 import Footer from "@/views/edu/common/footer/Footer.vue";
-import { ref,onMounted } from 'vue'
+import { ref,onMounted,watch } from 'vue'
 import {getListApi} from "@/api/edu/list/list";
-
+import {useRoute} from 'vue-router'
+// 路由参数对象
+const route = useRoute()
 // 类别
 const subjectParentId = ref(0)
 // 二级类别
@@ -146,6 +148,7 @@ const pageSize = ref(16)
 // 获取列表数据
 const getList = async ()=> {
   const params = {
+    'searchValue':searchValue.value,
     subjectParentId: subjectParentId.value,
     subjectId:sonSubjectId.value,
     difficulty:difficulty.value=='all'?-1:difficulty.value,
@@ -188,7 +191,14 @@ const toTypeList = (type:string)=>{
   courseType.value = type
   getList()
 }
+// 监听搜索关键字
+const searchValue = ref()
+watch(()=>route.query.keywords,(newSearchValue)=>{
+  searchValue.value = newSearchValue
+  getList()
+})
 onMounted(()=> {
+  searchValue.value = route.query.keywords
   getList()
 })
 </script>

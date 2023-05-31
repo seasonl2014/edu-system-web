@@ -8,7 +8,7 @@
     <!--跳转前台首页 start-->
     <el-link :underline="false" href="/">
       <el-icon><HomeFilled /></el-icon>
-      后台首页
+      前台首页
     </el-link>
     <!--跳转前台首页 end-->
     <!--登录用户信息 start-->

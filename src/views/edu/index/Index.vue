@@ -386,6 +386,12 @@ const findIndexCourseList = async ()=> {
   skillCourses.value = data.result.skillCourses
 
 }
+/**
+ * 跳转到详情页
+ */
+const toBanner = (url:string)=>{
+  window.open(url, '_blank')
+}
 onMounted(()=> {
   getIndexColumnCourses()
   getBannerList()

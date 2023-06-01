@@ -12,7 +12,7 @@
     <!--左边课程分类 start-->
     <div class="edu-banner-left">
       <div class="edu-banner-item" v-for="item in columnCourses" :key="item.id">
-        <span>{{item.name}}&nbsp;/&nbsp;{{item.childrens[0].name}}&nbsp;/&nbsp;{{item.childrens[1].name}} <img src="@/static/img/right.png"> </span>
+        <span>{{item.name}}&nbsp;/&nbsp;{{item.childrens.length>0?item.childrens[0].name:''}}&nbsp;/&nbsp;{{item.childrens.length>0?item.childrens[1].name:''}} <img src="@/static/img/right.png"> </span>
         <div class="edu-banner-nav">
           <h3>{{item.name}}</h3>
           <div class="banner-list">

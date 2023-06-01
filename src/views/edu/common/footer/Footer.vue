@@ -1,6 +1,6 @@
 <template>
 <div class="hotel-footer">
-  <p><a href="go.xueden.cn">Go学堂</a>2023 © <a href="go.xueden.cn">go.xueden.cn</a></p>
+  <p><a href="go.xueden.cn">学灯网</a>2023 © <a href="go.xueden.cn">go.xueden.cn</a></p>
   友情链接
   <a href="http://hotel.xueden.cn">酒店管理系统</a>
   <a href="http://edu.xueden.cn">学灯网</a>

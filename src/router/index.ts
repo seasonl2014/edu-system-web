@@ -16,7 +16,7 @@ export const staticRouter = [
     {
         path: '/index',
         name: 'Index',
-        meta: { title: 'Go学堂-个人开发者创业专用一站式在线教育平台' },
+        meta: { title: '学灯网-个人开发者创业专用一站式在线教育平台' },
         isMenu: false,
         component: ()=> import('@/views/edu/index/Index.vue')
     },
@@ -29,7 +29,7 @@ export const staticRouter = [
             {
                 path: 'list',
                 name: 'List',
-                meta: {title: '全部课程 - Go学堂'},
+                meta: {title: '全部课程 - 学灯网'},
                 component: ()=>import('@/views/edu/list/List.vue')
             },
             {
@@ -40,19 +40,19 @@ export const staticRouter = [
             {
                 path: 'vip',
                 name: 'VipInfo',
-                meta: {title: 'vip详情 - Go学堂'},
+                meta: {title: 'vip详情 - 学灯网'},
                 component: ()=>import('@/views/edu/vip/VipInfo.vue')
             },
             {
                 path: 'viporderpay/:orderno',
                 name: 'VipOrderPay',
-                meta: {title: 'VIP订单付款 - Go学堂'},
+                meta: {title: 'VIP订单付款 - 学灯网'},
                 component: ()=>import('@/views/edu/vip/VipOrderPay.vue')
             },
             {
                 path: 'studyCourse/:orderno',
                 name: 'StudyCourse',
-                meta: {title: '课程订单付款 - Go学堂'},
+                meta: {title: '课程订单付款 - 学灯网'},
                 component: ()=>import('@/views/edu/details/components/CourseOrderPay.vue')
             },
             {
@@ -63,37 +63,37 @@ export const staticRouter = [
             {
                 path: 'login',
                 name: 'EduLogin',
-                meta: {title: '登录Go学堂'},
+                meta: {title: '登录学灯网'},
                 component: ()=>import('@/views/edu/login/Login.vue')
             },
             {
                 path: 'student/myinfo',
                 name: 'MyInfo',
-                meta: {title: '个人信息-Go学堂'},
+                meta: {title: '个人信息-学灯网'},
                 component: ()=> import('@/views/edu/student/MyInfo.vue')
             },
             {
                 path: 'student/mycourse',
                 name: 'MyCourse',
-                meta: {title: '我的课程-Go学堂'},
+                meta: {title: '我的课程-学灯网'},
                 component: ()=> import('@/views/edu/student/MyCourse.vue')
             },
             {
                 path: 'student/myvip',
                 name: 'MyVip',
-                meta: {title: '购买VIP记录-Go学堂'},
+                meta: {title: '购买VIP记录-学灯网'},
                 component: ()=> import('@/views/edu/student/MyVip.vue')
             },
             {
                 path: 'student/mydownload',
                 name: 'MyDownload',
-                meta: {title: '下载课程资料记录-Go学堂'},
+                meta: {title: '下载课程资料记录-学灯网'},
                 component: ()=> import('@/views/edu/student/MyDownload.vue')
             },
             {
                 path: 'student/account',
                 name: 'Account',
-                meta: {title: '绑定账号-Go学堂'},
+                meta: {title: '绑定账号-学灯网'},
                 component: ()=> import('@/views/edu/student/Account.vue')
             },
         ]
@@ -308,7 +308,7 @@ router.beforeEach(async (to,from,next)=> {
     Nprogress.start()
     // 2.设置标题
     if(typeof(to.meta.title) === 'string'){
-        document.title = to.meta.title ||'Go学堂-个人开发者创业专用一站式在线教育平台'
+        document.title = to.meta.title ||'学灯网-个人开发者创业专用一站式在线教育平台'
     }
 
     // 3.如果是白名单的路径，直接放行

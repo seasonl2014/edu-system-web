@@ -86,7 +86,7 @@ const route = useRoute()
 console.log("route:",route.query)
 // 视频资源对象
 const detailsVideo = reactive({
-  title: 'Go学堂温馨提示，请先登录再来观看',
+  title: '学灯网温馨提示，请先登录再来观看',
   videoId: route.query.videoId,
   videoSourceId: '',
   playAuth: ''

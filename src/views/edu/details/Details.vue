@@ -673,6 +673,7 @@ const foldAndUnfold = (index:number,id:number)=> {
   min-width: 280px;
   width: 824px;
   float: left;
+  height: 342px;
 }
 .chapter-box {
   text-align: left;

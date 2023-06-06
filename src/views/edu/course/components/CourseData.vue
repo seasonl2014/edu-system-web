@@ -214,10 +214,10 @@ const submitUpload = (key:number)=> {
  */
 const onChange = (uploadFile: UploadFile, uploadFiles: UploadFiles)=> {
   const target: any = tableData.value.find(item => item.id === courseDataId.value)
+  percentag.value = 0
   // 显示进度条
   target.progress = true
-  // 文件说明
-  // target.downloadAddress = `文件名称：${uploadFile.name} ，文件大小：${uploadFile.size}`
+  // 启动定时器
   intervalId =  window.setInterval(getUploadPercent, 1000)
 }
 // 进度条对象
@@ -239,13 +239,13 @@ const upLoading = (key: number,urlFile:string) => {
  * 获取进度条
  */
 const getUploadPercent= async ()=>{
+  console.log('上传资料进度条！')
   const {data} = await getPercentApi(fileKey.value)
   if(data.result.percent >= 100){
+    console.log('上传资料进度条！完成清除')
     window.clearInterval(intervalId)
     percentag.value = 100
-  }else if(data.result.percent==-1){
-    window.clearInterval(intervalId)
-  }else {
+  }else if (data.result.percent != -1) {
     percentag.value = data.result.percent
   }
 }
@@ -263,9 +263,13 @@ const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
   console.log('文件加密后key:',key)
   fileKey.value = key
   if (rawFile.type !== 'application/zip') {
+    // 打开保存按钮
+    subLoading.value = false
     ElMessage.error('上传文件失败，只能上传zip格式的文件')
     return false
   } else if (rawFile.size / 1024 / 1024 > 500) {
+    // 打开保存按钮
+    subLoading.value = false
     ElMessage.error('上传的文件大于 500MB!')
     return false
   }
@@ -275,6 +279,8 @@ const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
  * 文件上传成功
  */
 const FileOnSuccess=(response: any, file: any, fileList: any)=>{
+  console.log('FileOnSuccess方法上传资料进度条！完成清除')
+  window.clearInterval(intervalId)
  upLoading(response.result.courseDataId,response.result.urlPath)
   // 打开保存按钮
   subLoading.value = false
@@ -306,6 +312,8 @@ const saveCourseData = async () => {
   const { data } = await saveCourseDataApi(tableData.value)
   ElMessage.success(data.message)
   subLoading.value = false
+  onCancel()
+  window.clearInterval(intervalId)
 }
 </script>
 

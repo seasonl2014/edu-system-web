@@ -1,6 +1,6 @@
 <template>
 <div class="hotel-footer">
-  <p><a href="go.xueden.cn">学灯网</a>2023 © <a href="go.xueden.cn">go.xueden.cn</a></p>
+  <p><a href="http://www.xueden.cn">学灯网</a>2023 © <a href="http://www.xueden.cn">www.xueden.cn</a><a href="https://beian.miit.gov.cn/" target="_blank">桂ICP备2023004515号-1</a></p>
   友情链接
   <a href="http://hotel.xueden.cn">酒店管理系统</a>
   <a href="http://edu.xueden.cn">学灯网</a>

@@ -2,7 +2,7 @@
 <div class="edu-header header-store">
   <div class="edu-container">
    <router-link class="logo" to="/index">
-     <img src="@/assets/edu/images/edu-logo.png" alt="学灯网在线教育" />
+     <img src="/edu-logo.svg" alt="学灯网在线教育" />
    </router-link>
 
     <div class="edu-component"></div>
@@ -108,12 +108,13 @@ const exitSystem = async ()=> {
 
 .edu-container .logo {
   position: absolute;
-  top: 16px;
+  top: -65px;
+  left: -63px;
 }
 
 .edu-container .logo img {
-  width: 125px;
-  height: 46px;
+  width: 256px;
+  height: 196px;
   border: none;
 }
 

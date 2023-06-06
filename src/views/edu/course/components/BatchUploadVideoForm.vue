@@ -37,11 +37,12 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent, PropType, reactive, ref } from 'vue'
+import {  reactive, ref } from 'vue'
 import {Md5} from 'ts-md5/dist/md5'
 import { ElForm, ElMessage } from 'element-plus'
 // 服务器路径
 const url = import.meta.env.VITE_APP_BASE_API
+const webSocketUrl = import.meta.env.VITE_APP_WS_API
 // 上传视频路径
 const uploadVideoUrl = url+'aliVod/upload/video/batch'
 // 是否显示进度条
@@ -63,6 +64,60 @@ const modelRef = reactive<any>({
   fileKey: props.values.fileKey || '',
   fileNum: props.values.fileNum || 0
 })
+
+/**
+ * 上传视频开启webSocket
+ */
+const webSocketUploadVideo = (id:number,fileKey:string)=> {
+  const orderNo = id+fileKey
+  if ("WebSocket" in window){
+    console.info("您的浏览器支持 WebSocket!")
+    // 打开一个 web socket
+    let ws = new WebSocket(webSocketUrl+"/edu/websocket/"+orderNo+"");
+    ws.onopen = function()
+    {
+      // Web Socket 已连接上，使用 send() 方法发送数据
+      ws.send("发送数据");
+      console.info("websocket已连接上使用 send() 方法发送数据")
+      //alert("数据发送中...");
+    };
+
+    ws.onmessage = function (evt)
+    {
+
+      let received_msg = JSON.parse(evt.data);
+      console.info("websocket使用 onmessage() received_msg方法接收数据",received_msg)
+      if(received_msg.status==1){
+        for (const key in progressNums.value) {
+          if(progressNums.value[key].fileKey === received_msg.fileKey){
+            progressNums.value[key].uploadPercent = received_msg.percent
+          }else if(received_msg.percent===100){ // 上传完成
+            progressNums.value[key].showProgress=false
+          }
+        }
+      }
+
+
+
+    };
+
+    ws.onclose = function()
+    {
+      // 关闭 websocket
+      ws.close();
+
+    };
+
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function(){
+      ws.onclose();
+    }
+  }else {
+    console.info("您的浏览器不支持 WebSocket!")
+    return null
+  }
+}
+
 /**
  * 上传视频前
  */
@@ -80,6 +135,7 @@ const beforeUpload = (file:any)=> {
   console.info(progressNums.value)
   modelRef.fileKey = key.toString()
   showProgress.value = true
+  webSocketUploadVideo(modelRef.id,modelRef.fileKey)
 }
 /**
  * 上传文件改变时
@@ -97,7 +153,7 @@ const onFileChange = (file: any, fileList: any) => {
  * @constructor
  */
 const fileOnSuccess = (response: any, file: any, fileList: any) => {
-
+  ElMessage.success('文件：'+file.name+''+response.message)
 }
 /**
  * 关闭批量上传视频弹出框

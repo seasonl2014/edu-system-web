@@ -163,3 +163,11 @@ export function getVideoApi(id:number) {
         method: 'get'
     })
 }
+
+//根据md5检查文件是否已经上传
+export function checkMd5Api(md5:string) {
+    return request({
+        url: `course/check/${md5}`,
+        method: 'get'
+    })
+}

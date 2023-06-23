@@ -16,6 +16,7 @@
     "echarts": "^5.4.1",
     "element-plus": "^2.2.28",
     "exceljs": "^4.3.0",
+    "mitt": "^3.0.0",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.28",
     "pinia-plugin-persistedstate": "^3.0.2",

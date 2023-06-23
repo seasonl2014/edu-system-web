@@ -42,9 +42,31 @@
          <!--解析进度条 end-->
 
          <!--上传进度条 start-->
+         <div class="progress">
+           <span>上传进度：</span>
+           <el-progress
+               :text-inside="true"
+               :stroke-width="16"
+               :percentage="uploadFile.uploadPercentage"
+           >
+           </el-progress>
+           <span
+               v-if="
+            (uploadFile.uploadPercentage > 0) &
+            (uploadFile.uploadPercentage < 100)
+          "
+           >
+          <span class="uploadSpeed">{{ uploadFile.uploadSpeed }}</span>
 
+          <el-button circle link @click="changeUploadingStop(uploadFile)">
+            <el-icon size="20" v-if="uploadFile.uploadingStop == false"
+            ><VideoPause
+            /></el-icon>
+            <el-icon size="20" v-else><VideoPlay /></el-icon>
+          </el-button>
+        </span>
+         </div>
          <!--上传进度条 end-->
-
        </div>
       <!--正在上传的文件列表 end-->
 
@@ -55,8 +77,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import {ElMessage} from 'element-plus'
 import SparkMD5 from 'spark-md5'
-import {checkMd5Api} from "@/api/edu/course/course";
+import {checkMd5Api, chunkApi} from "@/api/edu/course/course";
+import emitter from "@/utils/eventBus";
 const props = defineProps(['courseTitle','batchCourseDataVisible','courseId'])
 const emit = defineEmits(['batchCourseDataCancel'])
 
@@ -137,11 +161,114 @@ const beforeUpload= async(file: any)=> {
 
   const md5 = await computeMd5(file, uploadFile);//async 和 await配可以实现等待异步函数计算完成
   uploadFile.md5 = md5;
-  const res = await checkFile(md5);  //上传服务器检查，以确认是否秒传
+  const res = await checkFile(md5)  //上传服务器检查，以确认是否秒传
   console.log('checkFile返回值：',res)
-  uploadFile.needUpload = true
+  if(!res.result.isUploaded){
+    uploadFile.chunkList = res.result.chunkList
+    uploadFile.needUpload = true
+  }else {
+    uploadFile.needUpload = false
+    uploadFile.uploadPercentage.value = 100;
+    console.log("文件已秒传");
+    ElMessage({
+      showClose: true,
+      message: "文件已秒传",
+      type: "warning",
+    })
+  }
+
+}
+/**
+ * 上传文件,替换el-upload的action
+ */
+const upload = (xhrData: { file: { name: any; size: any; }; }) =>{
+  let uploadFile = null;
+  for (let i = 0; i < uploadFileList.value.length; i++) {
+    if (
+        (xhrData.file.name == uploadFileList.value[i].name) &
+        (xhrData.file.size == uploadFileList.value[i].size)
+    ) {
+      uploadFile = uploadFileList.value[i];
+      break;
+    }
+  }
+
+  if (uploadFile.needUpload) {
+    console.log("3.上传文件");
+
+    // 分片上传文件
+    // 确定分片的大小
+    uploadChunk(xhrData.file, 1, uploadFile);
+  }
 }
 
+/**
+ * 上传文件分片
+ */
+const uploadChunk = async (file, index, uploadFile)=> {
+  const chunkSize = 1024 * 1024 * 10 //10mb
+  const chunkTotal = Math.ceil(file.size / chunkSize)
+  if (index <= chunkTotal) {
+    const startTime = new Date().valueOf()
+    const exit = uploadFile.chunkList.includes(index)
+
+    if (!exit) {
+      if (!uploadFile.uploadingStop) {
+        // 分片上传，同时计算进度条和上传速度
+        // 已经上传的不在上传、
+        // 上传完成后提示，上传成功
+        const form = new FormData()
+        const start = (index - 1) * chunkSize
+        let end =
+            index * chunkSize >= file.size ? file.size : index * chunkSize
+        let chunk = file.slice(start, end)
+        form.append("chunk", chunk)
+        form.append("index", index)
+        form.append("chunkTotal", chunkTotal)
+        form.append("chunkSize", chunkSize)
+        form.append("md5", uploadFile.md5)
+        form.append("fileSize", file.size)
+        form.append("fileName", file.name)
+        form.append("courseId",props.courseId)
+
+        const { data } = await chunkApi(form)
+        if(data.status === 200){
+          const endTime = new Date().valueOf()
+          const timeDif = (endTime - startTime) / 1000
+          uploadFile.uploadSpeed = (10 / timeDif).toFixed(1) + " M/s"
+          uploadFile.chunkList.push(index)
+          uploadFile.uploadPercentage = parseInt(
+              (uploadFile.chunkList.length / chunkTotal) * 100
+          )
+          if (index == chunkTotal) {
+            emitter.emit("reloadFileList");
+          }
+
+          await uploadChunk(file, index + 1, uploadFile);
+
+        }
+
+
+      }
+    }else {
+      uploadFile.uploadPercentage = parseInt(
+          (uploadFile.chunkList.length / chunkTotal) * 100
+      )
+      await uploadChunk(file, index + 1, uploadFile)
+    }
+
+  }
+}
+
+/**
+ * 点击暂停或开始上传
+ */
+const changeUploadingStop = (uploadFile)=> {
+  uploadFile.uploadingStop = !uploadFile.uploadingStop;
+  if (!uploadFile.uploadingStop) {
+    uploadChunk(uploadFile.file, 1, uploadFile);
+  }
+}
 /**
  * 点击关闭按钮
  */

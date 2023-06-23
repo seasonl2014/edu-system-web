@@ -167,7 +167,16 @@ export function getVideoApi(id:number) {
 //根据md5检查文件是否已经上传
 export function checkMd5Api(md5:string) {
     return request({
-        url: `course/check/${md5}`,
+        url: `aliVod/upload/check/${md5}`,
         method: 'get'
+    })
+}
+
+// 保存分片数据
+export function chunkApi(data:object) {
+    return request({
+        url: 'aliVod/upload/chunk',
+        method: 'post',
+        data
     })
 }

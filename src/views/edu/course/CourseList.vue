@@ -99,10 +99,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="vip学员">
+      <el-table-column label="购买次数">
         <template #default="scope">
-          <el-tooltip class="item" effect="dark" content="加入VIP免费观看课程的用户" placement="top">
-            <el-tag  type="warning">{{ scope.row.vipCount }}人</el-tag>
+          <el-tooltip class="item" effect="dark" content="购买课程的用户" placement="top">
+            <el-tag  type="warning">{{ scope.row.buyCount }}人</el-tag>
           </el-tooltip>
         </template>
       </el-table-column>

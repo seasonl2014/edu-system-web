@@ -144,6 +144,75 @@ export const staticRouter = [
 // 定义动态路由
 export const asyncRoutes = [
     {
+        path: '/siteset',
+        name: 'SiteSet',
+        meta: {
+            title: '网站设置',
+            icon: 'Setting',
+            role: ['ROLE_ADMIN']
+        },
+        redirect: '/siteset/pay',
+        component: ()=> import('@/views/system/layout/Index.vue'),
+        isMenu: true,
+        funcNode: 2,
+        children: [
+            {
+                path: 'pay',
+                name: 'Pay',
+                meta: {
+                    title: '支付设置',
+                    icon: 'Money',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/pay/PayList.vue')
+            },
+            {
+                path: 'wxcode',
+                name: 'WxCode',
+                meta: {
+                    title: '微信登录设置',
+                    icon: 'Cellphone',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/wxcode/WxCodeList.vue')
+            },
+
+            {
+                path: 'sms',
+                name: 'Sms',
+                meta: {
+                    title: '短信设置',
+                    icon: 'Iphone',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/sms/SmsSet.vue')
+            },
+
+            {
+                path: 'email',
+                name: 'Email',
+                meta: {
+                    title: '邮箱设置',
+                    icon: 'BellFilled',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/email/EmailSet.vue')
+            },
+
+            {
+                path: 'file',
+                name: 'File',
+                meta: {
+                    title: '文件存储设置',
+                    icon: 'SetUp',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/file/FileSet.vue')
+            },
+
+        ]
+    },
+    {
         path: '/daily',
         name: 'Daily',
         meta: {

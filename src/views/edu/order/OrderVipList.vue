@@ -81,8 +81,8 @@
 
       <el-table-column label="操作" width="180">
         <template #default="scope">
-          <el-button @click="getCourseOrderInfo(scope.row.orderNo,scope.row.id)"  size="small" plain icon="Pear" type="warning">详情</el-button>
-          <el-button @click="refundCourseOrder(scope.row.orderNo,scope.row.id)" size="small" plain icon="Delete" type="danger" v-if="scope.row.isPayment ===1">退款</el-button>
+          <el-button @click="getVipOrderInfo(scope.row.orderNo,scope.row.id)"  size="small" plain icon="Pear" type="warning">详情</el-button>
+          <el-button @click="refundVipOrder(scope.row.orderNo,scope.row.id)" size="small" plain icon="Delete" type="danger" v-if="scope.row.isPayment ===1">退款</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -96,7 +96,7 @@
   </el-skeleton>
 
   <!--课程订单退款弹出框 start-->
-   <el-dialog align-center destroy-on-close v-model="refundCourseOrderVisible" width="50%">
+   <el-dialog align-center destroy-on-close v-model="refundVipOrderVisible" width="50%">
      <template #header>
        <div class="my-header">
          <el-icon size="26px"><EditPen/></el-icon>
@@ -104,13 +104,13 @@
        </div>
      </template>
      <!--退款组件 start-->
-     <RefundCourseOrder :courseOrderInfo="courseOrderInfo" @success="success"/>
+     <RefundVipOrder :vipOrderInfo="vipOrderInfo" @success="success"/>
      <!--退款组件 end-->
    </el-dialog>
   <!--课程订单退款弹出框 end-->
 
   <!--课程订单详情弹出框 start-->
-  <el-dialog align-center destroy-on-close v-model="courseOrderInfoVisible" width="50%">
+  <el-dialog align-center destroy-on-close v-model="vipOrderInfoVisible" width="50%">
     <template #header>
       <div class="my-header">
         <el-icon size="26px"><EditPen/></el-icon>
@@ -118,7 +118,7 @@
       </div>
     </template>
     <!--课程详情组件 start-->
-    <CourseOrderInfo :courseOrderInfo="courseOrderInfo"/>
+    <VipOrderInfo :vipOrderInfo="vipOrderInfo"/>
     <!--课程详情组件 end-->
   </el-dialog>
   <!--课程订单详情弹出框 end-->
@@ -129,9 +129,9 @@
 import { ref,reactive,onMounted,toRefs  } from 'vue'
 import { ElMessage } from 'element-plus'
 import {formatTime} from "@/utils/date";
-import {getCourseOrderInfoApi, getOrderCourseListApi, getOrderVipListApi} from "@/api/edu/order/order";
-import RefundCourseOrder from "@/views/edu/order/components/RefundCourseOrder.vue";
-import CourseOrderInfo from "@/views/edu/order/components/CourseOrderInfo.vue";
+import {getVipOrderInfoApi, getOrderVipListApi} from "@/api/edu/order/order";
+import RefundVipOrder from "@/views/edu/order/components/RefundVipOrder.vue";
+import VipOrderInfo from "@/views/edu/order/components/VipOrderInfo.vue";
 // 课程订单骨架屏状态
 const orderCourseLoading= ref(true)
 // 表格相关变量
@@ -205,46 +205,46 @@ onMounted(()=> {
   loadData(state)
 })
 // 课程订单详情
-const courseOrderInfo = ref()
+const vipOrderInfo = ref()
 // 退款弹出框标题
 const titleRefund = ref()
 // 退款弹出框状态
-const refundCourseOrderVisible = ref(false)
+const refundVipOrderVisible = ref(false)
 
 /**
  * 退款弹出框事件
  * @param orderNo 订单编号
  * @param id 订单ID
  */
-const refundCourseOrder = async (orderNo:string,id:number) => {
+const refundVipOrder = async (orderNo:string,id:number) => {
   // 获取订单详情
-  const { data } = await getCourseOrderInfoApi(id)
-  courseOrderInfo.value = data.result
-  titleRefund.value = `你正在给订单号：“${orderNo}”进行退款`
-  refundCourseOrderVisible.value = true
+  const { data } = await getVipOrderInfoApi(id)
+  vipOrderInfo.value = data.result
+  titleRefund.value = `你正在给VIP订单号：“${orderNo}”进行退款`
+  refundVipOrderVisible.value = true
 }
 
 /**
  * 退款回调函数
  */
 const success = ()=> {
-  refundCourseOrderVisible.value = false
+  refundVipOrderVisible.value = false
   loadData(state)
 }
 
-// 课程订单详情弹出框状态
-const courseOrderInfoVisible = ref(false)
-// 课程订单详情弹出框标题
+// VIP订单详情弹出框状态
+const vipOrderInfoVisible = ref(false)
+// VIP订单详情弹出框标题
 const titleInfo = ref()
 /**
  * 课程详情弹出框函数
  */
-const getCourseOrderInfo = async (orderNo:string,id:number) => {
+const getVipOrderInfo = async (orderNo:string,id:number) => {
   // 获取订单详情
-  const { data } = await getCourseOrderInfoApi(id)
-  courseOrderInfo.value = data.result
+  const { data } = await getVipOrderInfoApi(id)
+  vipOrderInfo.value = data.result
   titleInfo.value = `你正在查看订单号：“${orderNo}”的详情信息`
-  courseOrderInfoVisible.value = true
+  vipOrderInfoVisible.value = true
 }
 
 const { total,tableData,pageSize,pageIndex,loading,orderNo,isPayment}=toRefs(state)

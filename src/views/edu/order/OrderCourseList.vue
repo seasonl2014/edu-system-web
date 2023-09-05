@@ -4,11 +4,17 @@
   <!--搜索区域 start-->
   <div class="card-search">
     <el-row :gutter="10">
-      <el-col :span="21">
+      <el-col :span="13">
         <el-input :prefix-icon="Search" v-model="orderNo"
                   @keyup.enter.native="search" placeholder="订单编号搜索（回车）"/>
       </el-col>
-
+      <el-col :span="8">
+        <el-select v-model="isPayment" class="m-2" placeholder="请选择">
+          <el-option label="未支付" value="0"/>
+          <el-option label="已支付" value="1"/>
+          <el-option label="已退款" value="2"/>
+        </el-select>
+      </el-col>
       <el-col :span="3" style="display: inline-flex;justify-content: center;align-items: center;cursor: pointer;">
         <el-icon style="font-size: 20px;color: #b3b6bc;" @click="refresh"><Refresh/></el-icon>
       </el-col>
@@ -134,6 +140,8 @@ import CourseOrderInfo from "@/views/edu/order/components/CourseOrderInfo.vue";
 const orderCourseLoading= ref(true)
 // 表格相关变量
 const state = reactive({
+  // 订单状态
+  isPayment: '',
   // 搜索订单编号
   orderNo: '',
   // 课程订单明细表格数据
@@ -154,7 +162,8 @@ const loadOrderCourseData = async (state: any)=> {
   const params = {
     'pageIndex': state.pageIndex,
     'pageSize':state.pageSize,
-    'orderNo': state.orderNo
+    'orderNo': state.orderNo,
+    'isPayment':state.isPayment
   }
   const { data } = await getOrderCourseListApi(params)
   state.tableOrderCourseData = data.content
@@ -242,7 +251,7 @@ const getCourseOrderInfo = async (orderNo:string,id:number) => {
   courseOrderInfoVisible.value = true
 }
 
-const { total,tableOrderCourseData,pageSize,pageIndex,loading,orderNo}=toRefs(state)
+const { total,tableOrderCourseData,pageSize,pageIndex,loading,orderNo,isPayment}=toRefs(state)
 </script>
 
 <style scoped>

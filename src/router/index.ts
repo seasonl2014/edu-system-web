@@ -10,8 +10,9 @@ import {useStudentStore} from "../store/modules/student";
 export const staticRouter = [
     {
         path: '/',
-        redirect: '/index',
-        isMenu: false
+        meta: { title: '学灯网-个人开发者创业专用一站式在线教育平台' },
+        isMenu: false,
+        component: ()=> import('@/views/edu/index/Index.vue')
     },
     {
         path: '/index',

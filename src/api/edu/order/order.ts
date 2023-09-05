@@ -34,3 +34,20 @@ export function getOrderVipListApi(params:object) {
         params
     })
 }
+
+// 获取VIP订单详情信息
+export function getVipOrderInfoApi(id:number) {
+    return request({
+        url: `order/vip/${id}`,
+        method: 'get',
+    })
+}
+
+// VIP订单退款
+export function refundVipOrderApi(data:object) {
+    return request({
+        url: 'order/vip',
+        method: 'post',
+        data
+    })
+}

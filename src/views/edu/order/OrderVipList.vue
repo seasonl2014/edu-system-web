@@ -4,9 +4,17 @@
   <!--搜索区域 start-->
   <div class="card-search">
     <el-row :gutter="10">
-      <el-col :span="21">
+      <el-col :span="13">
         <el-input :prefix-icon="Search" v-model="orderNo"
                   @keyup.enter.native="search" placeholder="订单编号搜索（回车）"/>
+      </el-col>
+
+      <el-col :span="8">
+        <el-select v-model="isPayment" class="m-2" placeholder="请选择">
+          <el-option label="未支付" value="0"/>
+          <el-option label="已支付" value="1"/>
+          <el-option label="已退款" value="2"/>
+        </el-select>
       </el-col>
 
       <el-col :span="3" style="display: inline-flex;justify-content: center;align-items: center;cursor: pointer;">
@@ -19,7 +27,7 @@
 
   <!--课程订单明细表格区域 start-->
   <div class="table-box">
-    <el-table element-loading-text="数据加载中..." v-loading="loading" :data="tableOrderCourseData"
+    <el-table element-loading-text="数据加载中..." v-loading="loading" :data="tableData"
               style="width: 100%;text-align: center" :cell-style="{ textAlign: 'center' }"
               :header-cell-style="{ fontSize: '15px',background: '#083a6d',color: 'white',textAlign: 'center' }">
 
@@ -46,9 +54,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="课程ID" width="80">
+      <el-table-column label="VIP" width="80">
         <template #default="scope">
-          <span>{{scope.row.courseId}}</span>
+          <span>{{scope.row.vipId}}</span>
         </template>
       </el-table-column>
 
@@ -56,12 +64,6 @@
       <el-table-column label="学员ID" width="80">
         <template #default="scope">
           <span>{{scope.row.studentId}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="讲师ID" width="80">
-        <template #default="scope">
-          <span>{{scope.row.teacherId}}</span>
         </template>
       </el-table-column>
 
@@ -127,17 +129,19 @@
 import { ref,reactive,onMounted,toRefs  } from 'vue'
 import { ElMessage } from 'element-plus'
 import {formatTime} from "@/utils/date";
-import {getCourseOrderInfoApi, getOrderCourseListApi} from "@/api/edu/order/order";
+import {getCourseOrderInfoApi, getOrderCourseListApi, getOrderVipListApi} from "@/api/edu/order/order";
 import RefundCourseOrder from "@/views/edu/order/components/RefundCourseOrder.vue";
 import CourseOrderInfo from "@/views/edu/order/components/CourseOrderInfo.vue";
 // 课程订单骨架屏状态
 const orderCourseLoading= ref(true)
 // 表格相关变量
 const state = reactive({
+  // 支付状态
+  isPayment: '',
   // 搜索订单编号
   orderNo: '',
   // 课程订单明细表格数据
-  tableOrderCourseData: [],
+  tableData: [],
   // 总条数
   total: 0,
   // 每页显示行数
@@ -147,17 +151,18 @@ const state = reactive({
   loading: false
 })
 // 获取课程订单明细列表数据
-const loadOrderCourseData = async (state: any)=> {
+const loadData = async (state: any)=> {
   state.loading = true
   // 先清空列表数据
-  state.tableOrderCourseData = []
+  state.tableData = []
   const params = {
     'pageIndex': state.pageIndex,
     'pageSize':state.pageSize,
-    'orderNo': state.orderNo
+    'orderNo': state.orderNo,
+    'isPayment':state.isPayment
   }
-  const { data } = await getOrderCourseListApi(params)
-  state.tableOrderCourseData = data.content
+  const { data } = await getOrderVipListApi(params)
+  state.tableData = data.content
   state.total = data.totalElements
   state.loading = false
   orderCourseLoading.value = false
@@ -167,7 +172,7 @@ const refresh = ()=> {
   // 搜索关键字清空
   state.orderNo = ""
   // 更新列表数据
-  loadOrderCourseData(state)
+  loadData(state)
 }
 // 搜索
 const search = ()=> {
@@ -176,7 +181,7 @@ const search = ()=> {
       type: 'success',
       message: `订单编号“${state.orderNo}”搜索内容如下`
     })
-    loadOrderCourseData(state)
+    loadData(state)
   }
 }
 // 处理分页序号
@@ -194,10 +199,10 @@ const Nindex = (index)=> {
  */
 const changePage = (val: number)=> {
   state.pageIndex = val
-  loadOrderCourseData(state)
+  loadData(state)
 }
 onMounted(()=> {
-  loadOrderCourseData(state)
+  loadData(state)
 })
 // 课程订单详情
 const courseOrderInfo = ref()
@@ -224,7 +229,7 @@ const refundCourseOrder = async (orderNo:string,id:number) => {
  */
 const success = ()=> {
   refundCourseOrderVisible.value = false
-  loadOrderCourseData(state)
+  loadData(state)
 }
 
 // 课程订单详情弹出框状态
@@ -242,7 +247,7 @@ const getCourseOrderInfo = async (orderNo:string,id:number) => {
   courseOrderInfoVisible.value = true
 }
 
-const { total,tableOrderCourseData,pageSize,pageIndex,loading,orderNo}=toRefs(state)
+const { total,tableData,pageSize,pageIndex,loading,orderNo,isPayment}=toRefs(state)
 </script>
 
 <style scoped>

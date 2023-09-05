@@ -25,3 +25,12 @@ export function refundCourserOrderApi(data:object) {
         data
     })
 }
+
+// 获取VIP订单明细列表
+export function getOrderVipListApi(params:object) {
+    return request({
+        url: 'order/vip',
+        method: 'get',
+        params
+    })
+}

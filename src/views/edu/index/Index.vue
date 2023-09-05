@@ -9,47 +9,70 @@
   <!--中间内容 start-->
   <!--课程分类和走马灯 start-->
   <div class="edu-container edu-banner">
-    <!--左边课程分类 start-->
-    <div class="edu-banner-left">
-      <div class="edu-banner-item" v-for="item in columnCourses" :key="item.id">
-        <span>{{item.name}}&nbsp;/&nbsp;{{item.childrens[0].name}}&nbsp;/&nbsp;{{item.childrens[1].name}} <img src="@/static/img/right.png"> </span>
-        <div class="edu-banner-nav">
-          <h3>{{item.name}}</h3>
-          <div class="banner-list">
 
-            <a href=""  class="banner-list-item" v-for="course in item.eduCourseList" :key="course.id">
-              <router-link :to="'/edu/details/'+course.id" :title="course.title" target="_blank">
-              <div class="banner-list-img"><img :src="course.cover"> </div>
-              <div class="banner-list-text">
-                {{ course.shortTitle}}
-              </div>
-              </router-link>
-            </a>
-
+    <!--骨架屏 start-->
+    <el-skeleton class="horizontal-skeleton" :loading="columnCoursesLoading" animated>
+      <template #template>
+        <div style="padding: 20px;width: 265px">
+          <el-skeleton-item variant="h3" style="width: 50%" />
+          <div style="margin-top: 15px;">
+            <el-skeleton-item variant="text" style="padding: 10px 10px 10px 0;margin-right: 16px" />
+            <el-skeleton-item variant="text" style="padding: 10px 10px 10px 0;width: 30%" />
+            <el-skeleton-item variant="text" style="padding: 10px 10px 10px 0;margin-right: 16px" />
+            <el-skeleton-item variant="text" style="padding: 10px 10px 10px 0;width: 30%" />
+            <el-skeleton-item variant="text" style="padding: 10px 10px 10px 0;margin-right: 16px" />
+            <el-skeleton-item variant="text" style="padding: 10px 10px 10px 0;width: 30%" />
+            <el-skeleton-item variant="text" style="padding: 10px 10px 10px 0;margin-right: 16px" />
+            <el-skeleton-item variant="text" style="padding: 10px 10px 10px 0;width: 30%" />
           </div>
         </div>
-      </div>
-    </div>
-    <!--左边课程分类 end-->
+        <el-skeleton-item variant="image" style="width: 940px; height: 380px" />
+      </template>
+      <template #default>
+        <!--左边课程分类 start-->
+        <div class="edu-banner-left">
+          <div class="edu-banner-item" v-for="item in columnCourses" :key="item.id">
+            <span>{{item.name}}&nbsp;/&nbsp;{{item.childrens.length>0?item.childrens[0].name:''}}&nbsp;/&nbsp;{{item.childrens.length>0?item.childrens[1].name:''}} <img src="@/static/img/right.png"> </span>
+            <div class="edu-banner-nav">
+              <h3>{{item.name}}</h3>
+              <div class="banner-list">
 
-    <!--右边走马灯 start-->
-    <div class="edu-banner-right">
-      <div class="slider single-item">
+                <a href=""  class="banner-list-item" v-for="course in item.eduCourseList" :key="course.id">
+                  <router-link :to="'/edu/details/'+course.id" :title="course.title" target="_blank">
+                    <div class="banner-list-img"><img :src="course.cover"> </div>
+                    <div class="banner-list-text">
+                      {{ course.shortTitle}}
+                    </div>
+                  </router-link>
+                </a>
 
-        <!--幻灯片 start-->
-        <div class="block">
-          <el-carousel height="380px">
-            <el-carousel-item v-for="item in banners" :key="item.id">
-              <a href="" @click.prevent="toBanner(item.url)" target="_blank">
-                <img  :src="item.img">
-              </a>
-            </el-carousel-item>
-          </el-carousel>
+              </div>
+            </div>
+          </div>
         </div>
-        <!--幻灯片 end-->
-      </div>
-    </div>
-    <!--右边走马灯 end-->
+        <!--左边课程分类 end-->
+
+        <!--右边走马灯 start-->
+        <div class="edu-banner-right">
+          <div class="slider single-item">
+
+            <!--幻灯片 start-->
+            <div class="block">
+              <el-carousel height="380px">
+                <el-carousel-item v-for="item in banners" :key="item.id">
+                  <a href="" @click.prevent="toBanner(item.url)" target="_blank">
+                    <img  :src="item.img">
+                  </a>
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+            <!--幻灯片 end-->
+          </div>
+        </div>
+        <!--右边走马灯 end-->
+      </template>
+    </el-skeleton>
+    <!--骨架屏 end-->
 
   </div>
   <!--课程分类和走马灯 end-->
@@ -126,34 +149,56 @@
     <!--新上好课内容 start-->
     <div class="edu-course-list">
       <ul class="edu-course-list-item">
-        <!--课程内容 start-->
-        <li v-for="item in newCourses" class="edu-course-list-item-li">
-          <div class="list-img">
-            <router-link :to="'/edu/details/'+item.id" target="_blank">
-               <img :src="item.cover">
-            </router-link>
-          </div>
-          <div class="list-vip-img">
-            <img src="@/static/img/vipLogo.png">
-          </div>
-          <div class="list-text"><router-link :to="'/edu/details/'+item.id" target="_blank"> {{item.shortTitle}} </router-link></div>
-          <div class="list-tag">
-            {{item.lessonNum}}课时
-            <span v-if="item.difficulty==0">入门</span>
-            <span v-else-if="item.difficulty==1">初级</span>
-            <span v-else-if="item.difficulty==2">中级</span>
-            <span v-else>高级</span>
-            <i>{{item.viewCount}}人在学</i>
-          </div>
-          <div class="list-sale-price">
-            <div>
-              <span class="member-free">会员免费</span>
-              <span class="member-price">￥{{item.price}}</span>
-              <span class="origin-price l delete-line">￥{{item.originalPrice}}</span>
+
+        <!--骨架屏 start-->
+        <el-skeleton class="horizontal-skeleton" :loading="courseListLoading" animated :count="4">
+          <template #template>
+            <!--骨架屏预览内容 start-->
+            <div style="display: flex;flex-direction: column;margin-right: 40px;">
+            <el-skeleton-item variant="image" style="width: 275px; height: 165px;" />
+            <div style="padding: 14px">
+              <el-skeleton-item variant="h3" style="width: 50%" />
+              <div style="display: flex;align-items: center;justify-items: space-between;margin-top: 16px;height: 16px;">
+                <el-skeleton-item variant="text" style="margin-right: 16px" />
+                <el-skeleton-item variant="text" style="width: 30%" />
+              </div>
             </div>
-          </div>
-        </li>
-        <!--课程内容 end-->
+            </div>
+            <!--骨架屏预览内容 end-->
+
+          </template>
+          <template #default>
+            <!--课程内容 start-->
+            <li v-for="item in newCourses" class="edu-course-list-item-li">
+              <div class="list-img">
+                <router-link :to="'/edu/details/'+item.id" target="_blank">
+                  <img :src="item.cover">
+                </router-link>
+              </div>
+              <div class="list-vip-img">
+                <img src="@/static/img/vipLogo.png">
+              </div>
+              <div class="list-text"><router-link :to="'/edu/details/'+item.id" target="_blank"> {{item.shortTitle}} </router-link></div>
+              <div class="list-tag">
+                {{item.lessonNum}}课时
+                <span v-if="item.difficulty==0">入门</span>
+                <span v-else-if="item.difficulty==1">初级</span>
+                <span v-else-if="item.difficulty==2">中级</span>
+                <span v-else>高级</span>
+                <i>{{item.viewCount}}人在学</i>
+              </div>
+              <div class="list-sale-price">
+                <div>
+                  <span class="member-free">会员免费</span>
+                  <span class="member-price">￥{{item.price}}</span>
+                  <span class="origin-price l delete-line">￥{{item.originalPrice}}</span>
+                </div>
+              </div>
+            </li>
+            <!--课程内容 end-->
+          </template>
+        </el-skeleton>
+        <!--骨架屏 end-->
 
       </ul>
     </div>
@@ -184,34 +229,58 @@
     <!--实战课程内容 start-->
     <div class="edu-course-list">
       <ul class="edu-course-list-item">
-        <!--课程内容 start-->
-        <li class="edu-course-list-item-li" v-for="item in actualCourses">
-          <div class="list-img">
-            <router-link :to="'/edu/details/'+item.id" target="_blank">
-              <img :src="item.cover">
-            </router-link>
-          </div>
-          <div class="list-vip-img">
-            <img src="@/static/img/vipLogo.png">
-          </div>
-          <div class="list-text"><router-link :to="'/edu/details/'+item.id" target="_blank"> {{item.shortTitle}} </router-link></div>
-          <div class="list-tag">
-            {{ item.lessonNum }}课时
-            <span v-if="item.difficulty==0">入门</span>
-            <span v-else-if="item.difficulty==1">初级</span>
-            <span v-else-if="item.difficulty==2">中级</span>
-            <span v-else>高级</span>
-            <i>{{item.viewCount}}人在学</i>
-          </div>
-          <div class="list-sale-price">
-            <div>
-              <span class="member-free">会员免费</span>
-              <span class="member-price">￥{{item.price}}</span>
-              <span class="origin-price l delete-line">￥{{item.originalPrice}}</span>
+
+        <!--骨架屏 start-->
+        <el-skeleton class="horizontal-skeleton" :loading="courseListLoading" animated :count="4">
+          <template #template>
+            <!--骨架屏预览内容 start-->
+            <div style="display: flex;flex-direction: column;margin-right: 40px;">
+              <el-skeleton-item variant="image" style="width: 275px; height: 165px;" />
+              <div style="padding: 14px">
+                <el-skeleton-item variant="h3" style="width: 50%" />
+                <div style="display: flex;align-items: center;justify-items: space-between;margin-top: 16px;height: 16px;">
+                  <el-skeleton-item variant="text" style="margin-right: 16px" />
+                  <el-skeleton-item variant="text" style="width: 30%" />
+                </div>
+              </div>
             </div>
-          </div>
-        </li>
-        <!--课程内容 end-->
+            <!--骨架屏预览内容 end-->
+
+          </template>
+          <template #default>
+            <!--课程内容 start-->
+            <li class="edu-course-list-item-li" v-for="item in actualCourses">
+              <div class="list-img">
+                <router-link :to="'/edu/details/'+item.id" target="_blank">
+                  <img :src="item.cover">
+                </router-link>
+              </div>
+              <div class="list-vip-img">
+                <img src="@/static/img/vipLogo.png">
+              </div>
+              <div class="list-text"><router-link :to="'/edu/details/'+item.id" target="_blank"> {{item.shortTitle}} </router-link></div>
+              <div class="list-tag">
+                {{ item.lessonNum }}课时
+                <span v-if="item.difficulty==0">入门</span>
+                <span v-else-if="item.difficulty==1">初级</span>
+                <span v-else-if="item.difficulty==2">中级</span>
+                <span v-else>高级</span>
+                <i>{{item.viewCount}}人在学</i>
+              </div>
+              <div class="list-sale-price">
+                <div>
+                  <span class="member-free">会员免费</span>
+                  <span class="member-price">￥{{item.price}}</span>
+                  <span class="origin-price l delete-line">￥{{item.originalPrice}}</span>
+                </div>
+              </div>
+            </li>
+            <!--课程内容 end-->
+          </template>
+        </el-skeleton>
+        <!--骨架屏 end-->
+
+
       </ul>
     </div>
     <!--实战课程内容 end-->
@@ -241,34 +310,58 @@
     <!--新手入门内容 start-->
     <div class="edu-course-list">
       <ul class="edu-course-list-item">
-        <!--课程内容 start-->
-        <li class="edu-course-list-item-li" v-for="item in startedCourses">
-          <div class="list-img">
-            <router-link :to="'/edu/details/'+item.id" target="_blank">
-              <img :src="item.cover">
-            </router-link>
-          </div>
-          <div class="list-vip-img">
-            <img src="@/static/img/vipLogo.png">
-          </div>
-          <div class="list-text"><router-link :to="'/edu/details/'+item.id" target="_blank"> {{item.shortTitle}} </router-link></div>
-          <div class="list-tag">
-            {{item.lessonNum}}课时
-            <span v-if="item.difficulty==0">入门</span>
-            <span v-else-if="item.difficulty==1">初级</span>
-            <span v-else-if="item.difficulty==2">中级</span>
-            <span v-else>高级</span>
-            <i>{{item.viewCount}}人在学</i>
-          </div>
-          <div class="list-sale-price">
-            <div>
-              <span class="member-free">会员免费</span>
-              <span class="member-price">￥{{item.price}}</span>
-              <span class="origin-price l delete-line">￥{{item.originalPrice}}</span>
+
+        <!--骨架屏 start-->
+        <el-skeleton class="horizontal-skeleton" :loading="courseListLoading" animated :count="4">
+          <template #template>
+            <!--骨架屏预览内容 start-->
+            <div style="display: flex;flex-direction: column;margin-right: 40px;">
+              <el-skeleton-item variant="image" style="width: 275px; height: 165px;" />
+              <div style="padding: 14px">
+                <el-skeleton-item variant="h3" style="width: 50%" />
+                <div style="display: flex;align-items: center;justify-items: space-between;margin-top: 16px;height: 16px;">
+                  <el-skeleton-item variant="text" style="margin-right: 16px" />
+                  <el-skeleton-item variant="text" style="width: 30%" />
+                </div>
+              </div>
             </div>
-          </div>
-        </li>
-        <!--课程内容 end-->
+            <!--骨架屏预览内容 end-->
+
+          </template>
+          <template #default>
+            <!--课程内容 start-->
+            <li class="edu-course-list-item-li" v-for="item in startedCourses">
+              <div class="list-img">
+                <router-link :to="'/edu/details/'+item.id" target="_blank">
+                  <img :src="item.cover">
+                </router-link>
+              </div>
+              <div class="list-vip-img">
+                <img src="@/static/img/vipLogo.png">
+              </div>
+              <div class="list-text"><router-link :to="'/edu/details/'+item.id" target="_blank"> {{item.shortTitle}} </router-link></div>
+              <div class="list-tag">
+                {{item.lessonNum}}课时
+                <span v-if="item.difficulty==0">入门</span>
+                <span v-else-if="item.difficulty==1">初级</span>
+                <span v-else-if="item.difficulty==2">中级</span>
+                <span v-else>高级</span>
+                <i>{{item.viewCount}}人在学</i>
+              </div>
+              <div class="list-sale-price">
+                <div>
+                  <span class="member-free">会员免费</span>
+                  <span class="member-price">￥{{item.price}}</span>
+                  <span class="origin-price l delete-line">￥{{item.originalPrice}}</span>
+                </div>
+              </div>
+            </li>
+            <!--课程内容 end-->
+          </template>
+        </el-skeleton>
+        <!--骨架屏 end-->
+
+
       </ul>
     </div>
     <!--新手入门内容 end-->
@@ -298,34 +391,58 @@
       <!--技能提升内容 start-->
       <div class="edu-course-list">
         <ul class="edu-course-list-item">
-          <!--课程内容 start-->
-          <li class="edu-course-list-item-li" v-for="item in skillCourses">
-            <div class="list-img">
-              <router-link :to="'/edu/details/'+item.id" target="_blank">
-                <img :src="item.cover">
-              </router-link>
-            </div>
-            <div class="list-vip-img">
-              <img src="@/static/img/vipLogo.png">
-            </div>
-            <div class="list-text"><router-link :to="'/edu/details/'+item.id" target="_blank"> {{item.shortTitle}} </router-link></div>
-            <div class="list-tag">
-              {{item.lessonNum}}课时
-              <span v-if="item.difficulty==0">入门</span>
-              <span v-else-if="item.difficulty==1">初级</span>
-              <span v-else-if="item.difficulty==2">中级</span>
-              <span v-else>高级</span>
-              <i>{{item.viewCount}}人在学</i>
-            </div>
-            <div class="list-sale-price">
-              <div>
-                <span class="member-free">会员免费</span>
-                <span class="member-price">￥{{item.price}}</span>
-                <span class="origin-price l delete-line">￥{{item.originalPrice}}</span>
+
+          <!--骨架屏 start-->
+          <el-skeleton class="horizontal-skeleton" :loading="courseListLoading" animated :count="4">
+            <template #template>
+              <!--骨架屏预览内容 start-->
+              <div style="display: flex;flex-direction: column;margin-right: 40px;">
+                <el-skeleton-item variant="image" style="width: 275px; height: 165px;" />
+                <div style="padding: 14px">
+                  <el-skeleton-item variant="h3" style="width: 50%" />
+                  <div style="display: flex;align-items: center;justify-items: space-between;margin-top: 16px;height: 16px;">
+                    <el-skeleton-item variant="text" style="margin-right: 16px" />
+                    <el-skeleton-item variant="text" style="width: 30%" />
+                  </div>
+                </div>
               </div>
-            </div>
-          </li>
-          <!--课程内容 end-->
+              <!--骨架屏预览内容 end-->
+
+            </template>
+            <template #default>
+              <!--课程内容 start-->
+              <li class="edu-course-list-item-li" v-for="item in skillCourses">
+                <div class="list-img">
+                  <router-link :to="'/edu/details/'+item.id" target="_blank">
+                    <img :src="item.cover">
+                  </router-link>
+                </div>
+                <div class="list-vip-img">
+                  <img src="@/static/img/vipLogo.png">
+                </div>
+                <div class="list-text"><router-link :to="'/edu/details/'+item.id" target="_blank"> {{item.shortTitle}} </router-link></div>
+                <div class="list-tag">
+                  {{item.lessonNum}}课时
+                  <span v-if="item.difficulty==0">入门</span>
+                  <span v-else-if="item.difficulty==1">初级</span>
+                  <span v-else-if="item.difficulty==2">中级</span>
+                  <span v-else>高级</span>
+                  <i>{{item.viewCount}}人在学</i>
+                </div>
+                <div class="list-sale-price">
+                  <div>
+                    <span class="member-free">会员免费</span>
+                    <span class="member-price">￥{{item.price}}</span>
+                    <span class="origin-price l delete-line">￥{{item.originalPrice}}</span>
+                  </div>
+                </div>
+              </li>
+              <!--课程内容 end-->
+            </template>
+          </el-skeleton>
+          <!--骨架屏 end-->
+
+
         </ul>
       </div>
       <!--技能提升内容 end-->
@@ -349,9 +466,11 @@ import {findIndexCourseListApi, getBannerListApi, getIndexColumnCoursesApi} from
 // 课程栏目
 const columnCourses = ref([])
 // 获取栏目和课程
+const columnCoursesLoading= ref(true)
 const getIndexColumnCourses = async ()=> {
   const { data } = await getIndexColumnCoursesApi()
   columnCourses.value = data.result
+  columnCoursesLoading.value = false
 }
 // 幻灯片
 const banners = ref([])
@@ -366,6 +485,7 @@ const getBannerList = async ()=> {
 }
 
 // 获取课程列表
+const courseListLoading = ref(true)
 // 新上好课
 const newCourses = ref([])
 // 实战课程
@@ -384,7 +504,7 @@ const findIndexCourseList = async ()=> {
   actualCourses.value = data.result.actualCourses
   startedCourses.value = data.result.startedCourses
   skillCourses.value = data.result.skillCourses
-
+  courseListLoading.value = false
 }
 /**
  * 跳转到详情页
@@ -791,5 +911,15 @@ onMounted(()=> {
   background-color: #fff!important;
 }
 /*新上好课 end*/
+
+/*自定义骨架屏排列方式*/
+.horizontal-skeleton {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+/* 添加一些样式来控制水平排列的 el-skeleton */
+
 
 </style>

@@ -12,7 +12,7 @@
       <div class="loginbox">
         <a class="ewm_login" @click="wxlogin"><span>扫码登录更便捷</span></a>
         <div class="login02">
-          <div class="tit">账号登录 <a class="changelogin hide">使用密码登录</a> <a class="changelogin hide">使用验证码登录</a>
+          <div class="tit">手机号登录 <a class="changelogin hide">使用密码登录</a> <a class="changelogin hide">使用验证码登录</a>
           </div>
           <ul class="logn_ul2">
             <li>
@@ -28,14 +28,44 @@
             <li style="border:0">
               <el-button class="sub1" :loading="subLoading" @click="login(loginFormRef)">登录</el-button>
             </li>
-            <h1 style="position:relative">还没有帐号？<a @click="wxlogin">微信扫码即注册</a><span style="position:absolute; right:0">忘记密码？<a @click="wxlogin">立即找回</a></span></h1>
+            <h1 style="position:relative">还没有帐号？<a @click="wxlogin">微信扫码即注册</a><span style="position:absolute; right:0">忘记密码？<a @click="passPwdBack">立即找回</a></span></h1>
           </ul>
         </div>
       </div>
     </el-form>
   </div>
   <!--登录 end-->
-
+  <!--找回密码弹框 start-->
+  <div class="j-cover" v-show="coverState">
+    <!--找回密码-->
+    <div class="j-cover-box bind-phone" v-show="findPwdState">
+      <h3>找回密码</h3>
+      <form class="cover-form">
+        <div class="cover-item">
+          <span>手机号码：</span>
+          <input type="text" v-model="passWordInfo.mobile" placeholder="请输入手机号" class="cover-input">
+        </div>
+        <div class="cover-item">
+          <span>短信验证：</span>
+          <input type="text" v-model="passWordInfo.code" class="cover-input">
+          <i @click="sendSms()">短信接收</i>
+        </div>
+        <div class="cover-item">
+          <span>新密码：</span>
+          <input type="text" v-model="passWordInfo.newPassWord" placeholder="请输入密码" class="cover-input">
+        </div>
+        <div class="cover-item">
+          <span>确认密码：</span>
+          <input type="text" v-model="passWordInfo.resNewPassWord" placeholder="请输入密码" class="cover-input">
+        </div>
+        <div class="cover-btn">
+          <input type="button" value="确定" class="form-findPwd-btn subBtn" @click="savePassWord()">
+          <input type="button" value="取消" class="form-findPwd-btn cancel" @click="cancelFindPwd()">
+        </div>
+      </form>
+    </div>
+  </div>
+  <!--找回密码弹框 end-->
   <!--底部 start-->
   <Footer/>
   <!--底部 end-->
@@ -45,11 +75,12 @@
 import TopHeader from "@/views/edu/common/header/TopHeader.vue";
 import Search from "@/views/edu/common/search/Search.vue";
 import Footer from "@/views/edu/common/footer/Footer.vue";
-import { ElMessage,FormInstance,FormRules } from 'element-plus'
+import { ElMessage,FormInstance,FormRules,ElMessageBox } from 'element-plus'
 import {ref,reactive} from 'vue'
-import {loginApi} from "@/api/edu/login/login";
+import {loginApi, savePassWordApi, sendSmsApi} from "@/api/edu/login/login";
 import {useRouter } from 'vue-router'
 import { useStudentStore } from "@/store/modules/student"
+
 // 获取服务器路径
 const url = import.meta.env.VITE_APP_BASE_API
 // 获取路由对象
@@ -135,6 +166,63 @@ const resolveSocialLogin= async(e:any)=> {
     })
   }
 
+}
+
+// 找回密码信息
+const passWordInfo =reactive({
+      mobile: '',
+      code: '',
+      newPassWord: '',
+      resNewPassWord: '',
+})
+
+/**
+ * 找回密码弹出框
+ */
+const findPwdState = ref(false)
+const coverState = ref(false)
+const passPwdBack = ()=> {
+  findPwdState.value = true
+  coverState.value = true
+}
+/**
+ * 取消找回密码
+ */
+const cancelFindPwd = ()=>{
+  findPwdState.value=false
+  coverState.value=false
+}
+/**
+ * 验证手机号
+ */
+const verifyPhone =()=>{
+  // 验证手机号
+  let reg = /^1[0-9]{10}$/
+  if (passWordInfo.mobile === '' || passWordInfo.mobile.length <= 10|| !reg.test(passWordInfo.mobile)) {
+    ElMessage.error('手机号不正确')
+    return false
+  }else {
+    return true
+  }
+}
+/**
+ *
+ * 发送验证码
+ */
+const sendSms = async ()=>{
+  if(verifyPhone()){
+    const { data } = await sendSmsApi(passWordInfo.mobile)
+    ElMessageBox.alert(data.message)
+    console.log('发送手机验证码返回信息：',data)
+  }
+}
+
+/**
+ * 保存密码
+ */
+const savePassWord = async ()=>{
+  const {data} = await savePassWordApi(passWordInfo)
+  ElMessageBox.alert(data.message)
 }
 
 </script>
@@ -238,7 +326,7 @@ ul, li, dl, dt {
 .login form ul .sub1 {
   -webkit-appearance: none;
   width: 100%;
-  background: #ff536a;
+  background: #5390ff;
   color: #fff;
   font-size: 16px;
   border: 0;
@@ -258,5 +346,82 @@ ul, li, dl, dt {
 .login form ul h1 a {
   color: #ff536a;
   cursor: pointer;
+}
+
+.j-cover{
+  /* display: none;*/
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.3);
+  position: fixed;
+  left: 0;
+  top:0;
+  z-index: 1;
+}
+.j-cover-box{
+  /* display: none;*/
+  width: 488px;
+  /*height: 444px;*/
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 1px 1px 5px rgba(0,0,0,.1);
+  position: fixed;
+  left: 50%;
+  top:50%;
+  transform: translate(-50%, -50%);
+  padding: 20px 30px;
+}
+.j-cover-box h3{
+  color: #555555;
+  font-size: 16px;
+}
+.cover-form{
+  margin-top: 30px;
+}
+.cover-item{
+  margin: 20px 0;
+}
+.cover-item span{
+  width: 16px;
+  color: #555555;
+  display: inline-block;
+  width: 85px;
+}
+.cover-input{
+  width: 75%;
+  height: 36px;
+  border:none;
+  background: #f4f4f4;
+  border-radius: 6px;
+  font-size: 14px;
+  padding-left: 10px;
+}
+.cover-item i{
+  color: #05af10;
+  font-size: 16px;
+  padding: 0 10px;
+  margin-left: -100px;
+  line-height: 36px;
+  font-style: normal;
+  cursor: pointer;
+}
+.cover-btn{
+  text-align: center;
+  margin-top: 20px;
+}
+
+.form-findPwd-btn{
+  color: #8f8f8f;
+  border:1px solid #8f8f8f;
+  padding: 2px 10px;
+  font-size: 14px;
+  border-radius: 20px;
+  margin: 0 10px;
+  cursor: pointer;
+}
+.subBtn{
+  color: #ffffff;
+  background: #4c4fb9;
+  border:none;
 }
 </style>

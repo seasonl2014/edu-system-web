@@ -7,7 +7,7 @@ const { studentToken } = useStudentStore()
 const { token } = useUserStore()
 const service = axios.create({
     baseURL: import.meta.env.VITE_APP_BASE_API,
-    timeout: 100000,
+    timeout: 36000000,
     // 自定义请求头
     headers: {'studentToken': studentToken,'userToken': token},
 })

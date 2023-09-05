@@ -379,7 +379,7 @@ const onCancel = ()=> {
 
 // 跳转到Vip页面
 const addVip = ()=> {
-  window.open('#/edu/vip', '_blank');
+  window.open('/edu/vip', '_blank');
 }
 
 // 加入学习
@@ -673,6 +673,7 @@ const foldAndUnfold = (index:number,id:number)=> {
   min-width: 280px;
   width: 824px;
   float: left;
+  min-height: 342px;
 }
 .chapter-box {
   text-align: left;

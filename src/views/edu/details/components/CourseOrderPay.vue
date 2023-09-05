@@ -90,7 +90,7 @@ const payVisible = ref(false)
 const payCode = ref('支付失败，请加客服微信：w11184629')
 const payBuy = async ()=> {
   const { data } = await payBuyCourseApi(orderNo.value)
-  payCode.value = JSON.parse(data.result).code_url
+  payCode.value = data.result
   payVisible.value = true
   webSocketPay(orderNo.value)
 }

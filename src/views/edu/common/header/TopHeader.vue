@@ -2,7 +2,7 @@
 <div class="edu-header header-store">
   <div class="edu-container">
    <router-link class="logo" to="/index">
-     <img src="@/assets/edu/images/edu-logo.png" alt="Go学堂在线教育" />
+     <img src="/edu-logo.svg" alt="学灯网在线教育" />
    </router-link>
 
     <div class="edu-component"></div>
@@ -69,7 +69,7 @@ eduActive.value = route.path
 // 退出系统
 const exitSystem = async ()=> {
   ElMessageBox.confirm(
-      '您确定要退出Go学堂吗？',
+      '您确定要退出学灯网吗？',
       '温馨提示',
       {
         confirmButtonText: '确定',
@@ -108,12 +108,13 @@ const exitSystem = async ()=> {
 
 .edu-container .logo {
   position: absolute;
-  top: 16px;
+  top: -65px;
+  left: -63px;
 }
 
 .edu-container .logo img {
-  width: 125px;
-  height: 46px;
+  width: 256px;
+  height: 196px;
   border: none;
 }
 

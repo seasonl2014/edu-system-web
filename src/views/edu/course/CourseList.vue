@@ -99,10 +99,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="vip学员">
+      <el-table-column label="购买次数">
         <template #default="scope">
-          <el-tooltip class="item" effect="dark" content="加入VIP免费观看课程的用户" placement="top">
-            <el-tag  type="warning">{{ scope.row.vipCount }}人</el-tag>
+          <el-tooltip class="item" effect="dark" content="购买课程的用户" placement="top">
+            <el-tag  type="warning">{{ scope.row.buyCount }}人</el-tag>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -128,11 +128,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="220">
+      <el-table-column label="操作" width="240">
         <template #default="scope">
           <el-button  link title="编辑课程"   @click="() => editCourse(scope.row.id)" :loading="detailUpdateLoading.includes(scope.row.id)" icon="edit">编辑</el-button>
           <el-button   link title="课程开发环境变量"   @click="() => environmenParamData(scope.row.id,scope.row.title)" :loading="deleteLoading.includes(scope.row.id)" icon="setting">参数</el-button>
           <el-button  link   title="上传课程资源"  :loading="detailUploadLoading.includes(scope.row.id)"    size="mini" icon="upload" @click="courseDataUpload(scope.row.id,scope.row.title)">上传</el-button>
+          <el-button  link   title="批量上传课程资源"  :loading="detailUploadLoading.includes(scope.row.id)"    size="mini" icon="upload" @click="batchCourseDataUpload(scope.row.id,scope.row.title)">批传</el-button>
           <el-button  link title="课程详情"    @click="() => detailCourse(scope.row.id,scope.row.title)" :loading="downloadLoading.includes(scope.row.id)" icon="view">详情</el-button>
           <el-button  link title="课程大纲"    @click="() => classHour(scope.row.id,scope.row.title)" :loading="downloadLoading.includes(scope.row.id)" icon="VideoPlay">大纲</el-button>
         </template>
@@ -211,6 +212,13 @@
       @onCancel="courseDataCancel"
   />
   <!--课程资料 end-->
+  <!--批量上传课程资料 start-->
+  <BatchUploadFile
+      :course-id="courseId"
+      :course-title="courseTitle"
+      :batchCourseDataVisible="batchCourseDataVisible"
+      @batchCourseDataCancel="batchCourseDataCancel"/>
+  <!--批量上传课程资料 end-->
   <!--课程大纲 start-->
   <ClassHour
       :course-id="courseId"
@@ -232,6 +240,7 @@ import UploadCover from "@/views/edu/course/components/UploadCover.vue"
 import EnvironmenParam from "@/views/edu/course/components/EnvironmenParam.vue"
 import DetailCourse from "@/views/edu/course/components/DetailCourse.vue"
 import CourseData from "@/views/edu/course/components/CourseData.vue"
+import BatchUploadFile from "@/views/edu/course/components/BatchUploadFile.vue"
 import ClassHour from "@/views/edu/course/components/ClassHour.vue"
 import {exportExcel} from "@/utils/exportExcel";
 import {delCourseApi, getCourseApi, getCourseListApi, updateStatusApi} from "@/api/edu/course/course";
@@ -388,6 +397,25 @@ const courseDataCancel = ()=> {
 const courseDataUpload = async (id: number,title:string)=> {
   courseTitle.value = `你正在给课程：“${title}”上传资料`
   courseDataVisible.value = true
+  courseId.value = id
+}
+
+// 批量上传课程资料弹出层状态
+const batchCourseDataVisible = ref(false)
+
+/**
+ * 关闭批量上传课程资料弹出层
+ */
+const batchCourseDataCancel = ()=> {
+  batchCourseDataVisible.value = false
+}
+
+/**
+ * 批量上传课程资料
+ */
+const batchCourseDataUpload = async (id: number,title:string)=> {
+  courseTitle.value = `你正在给课程：“${title}”批量上传资料`
+  batchCourseDataVisible.value = true
   courseId.value = id
 }
 

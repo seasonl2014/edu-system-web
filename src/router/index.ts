@@ -213,10 +213,57 @@ export const asyncRoutes = [
         ]
     },
     {
+        path: '/finance',
+        name: 'Finance',
+        meta: {
+            title: '财务中心',
+            icon: 'Coin',
+            role: ['ROLE_ADMIN']
+        },
+        redirect: '/finance/order',
+        component: ()=> import('@/views/system/layout/Index.vue'),
+        isMenu: true,
+        funcNode: 2,
+        children: [
+            {
+                path: 'order',
+                name: 'order',
+                meta: {
+                    title: '订单明细',
+                    icon: 'ShoppingCart',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/order/OrderList.vue')
+            },
+            {
+                path: 'wxcode',
+                name: 'WxCode',
+                meta: {
+                    title: '收入明细',
+                    icon: 'Cellphone',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/wxcode/WxCodeList.vue')
+            },
+
+            {
+                path: 'file',
+                name: 'File',
+                meta: {
+                    title: '退款记录',
+                    icon: 'SetUp',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/file/FileSet.vue')
+            },
+
+        ]
+    },
+    {
         path: '/daily',
         name: 'Daily',
         meta: {
-            title: '日常管理',
+            title: '课程中心',
             icon: 'GoldMedal',
             role: ['ROLE_ADMIN']
         },
@@ -263,7 +310,7 @@ export const asyncRoutes = [
         path: '/base',
         name: 'Base',
         meta: {
-            title: '数据管理',
+            title: '数据中心',
             icon: 'DataAnalysis',
             role: ['ROLE_ADMIN']
         },

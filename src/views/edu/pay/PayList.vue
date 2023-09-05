@@ -54,10 +54,6 @@
                   <el-input v-model="formWxPay.notifyCourseUrl" placeholder="请输入购买课程通知地址" clearable />
                 </el-form-item>
 
-                <el-form-item label="微信扫码支付请求接口" prop="nativeV3Api">
-                  <el-input v-model="formWxPay.nativeV3Api" placeholder="请输入微信扫码支付请求接口" clearable />
-                </el-form-item>
-
                 <el-form-item>
                   <el-button type="primary" :loading="wxSubLoading" @click="onSubmitWxPay(formWxPayRef)">保存</el-button>
                 </el-form-item>
@@ -96,7 +92,6 @@ const formWxPay = reactive({
   apiV3:'',// apiv3密钥
   notifyVipUrl:'',//购买VIP会员异步回调通知
   notifyCourseUrl: '',//购买课程异步回调通知
-  nativeV3Api: '',//native支付请求接口
 })
 // 微信支付表单约束规则
 const formWxPayRules = reactive<FormRules>({
@@ -106,8 +101,7 @@ const formWxPayRules = reactive<FormRules>({
   merchantPrivatekey:[{required: true,message: '微信支付商户私钥不能为空！',trigger:'blur'}],
   apiV3:[{required: true,message: '微信支付商户apiv3密钥不能为空！',trigger:'blur'}],
   notifyVipUrl:[{required: true,message: '购买VIP会员异步回调通知不能为空！',trigger:'blur'}],
-  notifyCourseUrl: [{required: true,message: '购买课程异步回调通知不能为空！',trigger:'blur'}],
-  nativeV3Api: [{required: true,message: '微信扫码支付请求接口不能为空！',trigger:'blur'}]
+  notifyCourseUrl: [{required: true,message: '购买课程异步回调通知不能为空！',trigger:'blur'}]
 })
 // 微信支付设置提交按钮状态
 const wxSubLoading = ref(false)

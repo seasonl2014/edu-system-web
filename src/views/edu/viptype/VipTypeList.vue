@@ -59,7 +59,7 @@
 
       <el-table-column label="加入人数">
         <template #default="scope">
-          <span><el-tag>{{scope.row.nums}}</el-tag></span>
+          <span style="cursor: pointer;text-decoration:underline;" @click="view(scope.row.id)"><el-tag>{{scope.row.nums}}</el-tag></span>
         </template>
       </el-table-column>
 
@@ -120,6 +120,20 @@
   </el-dialog>
   <!--编辑VIP类型弹出框 end-->
 
+  <!--查看VIP学员列表数据 start-->
+  <el-dialog align-center v-model="viewVipStudentVisible" width="60%"  destroy-on-close>
+    <template #header>
+      <div class="my-header">
+        <el-icon size="26px"><View/></el-icon>
+        <h1>查看VIP学员列表数据</h1>
+      </div>
+    </template>
+    <!--学员列表组件 start-->
+    <ViewVipStudentList :vipId="vipId"/>
+    <!--学员列表组件 end-->
+  </el-dialog>
+
+  <!--查看VIP学员列表数据 end-->
 </template>
 
 <script setup lang="ts">
@@ -129,6 +143,7 @@ import {ref,reactive,toRefs,onMounted} from 'vue'
 import {ElMessage} from 'element-plus'
 import AddVipType from "@/views/edu/VipType/components/AddVipType.vue"
 import EditVipType from "@/views/edu/VipType/components/EditVipType.vue"
+import ViewVipStudentList from "@/views/edu/viptype/components/ViewVipStudentList.vue";
 import {exportExcel} from "@/utils/exportExcel";
 import {delVipTypeApi, getVipTypeApi, getVipTypeListApi} from "@/api/edu/viptype/vipType";
 const state = reactive({
@@ -257,6 +272,15 @@ const exportExcelAction = ()=> {
     autowidth: true
   })
 }
+
+// 查看VIP学员列表数据
+const vipId = ref()
+const viewVipStudentVisible = ref(false)
+const view = (id:number)=> {
+  vipId.value = id
+  viewVipStudentVisible.value = true
+}
+
 const {tableData,pageSize,loading,total,searchValue} = toRefs(state)
 </script>
 

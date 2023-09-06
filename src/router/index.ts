@@ -237,25 +237,25 @@ export const asyncRoutes = [
                 component: ()=> import('@/views/edu/order/OrderList.vue')
             },
             {
-                path: 'wxcode',
-                name: 'WxCode',
+                path: 'dealmoney',
+                name: 'DealMoney',
                 meta: {
                     title: '收入明细',
                     icon: 'Cellphone',
                     role: ['ROLE_ADMIN']
                 },
-                component: ()=> import('@/views/edu/wxcode/WxCodeList.vue')
+                component: ()=> import('@/views/edu/dealmoney/DealMoneyList.vue')
             },
 
             {
-                path: 'file',
-                name: 'File',
+                path: 'refund',
+                name: 'Refund',
                 meta: {
                     title: '退款记录',
-                    icon: 'SetUp',
+                    icon: 'CreditCard',
                     role: ['ROLE_ADMIN']
                 },
-                component: ()=> import('@/views/edu/file/FileSet.vue')
+                component: ()=> import('@/views/edu/refund/RefundList.vue')
             },
 
         ]

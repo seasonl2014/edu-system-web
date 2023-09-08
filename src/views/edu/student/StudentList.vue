@@ -89,7 +89,6 @@
 
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button size="small" @click="editStudent(scope.row.id)">开通会员</el-button>
           <el-popconfirm confirm-button-text="确定" cancel-button-text="取消" icon="Delete" icon-color="#626AEF"
           :title="'确定删除学生名为“'+scope.row.loginName+'”的学生吗？'"
           @confirm="delStudent(scope.row.id)">

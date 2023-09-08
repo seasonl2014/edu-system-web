@@ -260,6 +260,33 @@ export const asyncRoutes = [
 
         ]
     },
+
+    {
+        path: '/marketing',
+        name: 'Marketing',
+        meta: {
+            title: '营销中心',
+            icon: 'Bowl',
+            role: ['ROLE_ADMIN']
+        },
+        redirect: '/marketing/coupons',
+        component: ()=> import('@/views/system/layout/Index.vue'),
+        isMenu: true,
+        funcNode: 2,
+        children: [
+            {
+                path: 'coupons',
+                name: 'Coupons',
+                meta: {
+                    title: '代金券管理',
+                    icon: 'Handbag',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/marketing/CashCouponsStockList.vue')
+            },
+        ]
+    },
+
     {
         path: '/daily',
         name: 'Daily',

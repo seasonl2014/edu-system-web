@@ -97,6 +97,12 @@ export const staticRouter = [
                 meta: {title: '绑定账号-学灯网'},
                 component: ()=> import('@/views/edu/student/Account.vue')
             },
+            {
+                path: 'student/mycoupon',
+                name: 'MyCoupon',
+                meta: {title: '我的优惠券-学灯网'},
+                component: ()=> import('@/views/edu/student/MyCoupon.vue')
+            },
         ]
     },
     {

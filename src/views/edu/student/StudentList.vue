@@ -81,9 +81,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="创建时间">
+      <el-table-column label="注册时间">
         <template #default="scope">
-          <span>{{formatTime(scope.row.createTime,'yyyy-MM-dd')}}</span>
+          <span>{{formatTime(scope.row.createTime,'yyyy-MM-dd HH:mm:ss')}}</span>
         </template>
       </el-table-column>
 

@@ -84,6 +84,16 @@ export function getBuyVipListApi() {
         method: 'get'
     })
 }
+
+// 获取我的优惠券记录
+export function getMyCouponListApi(params:object) {
+    return request({
+        url: 'edu/front/student/center/getMyCouponList',
+        method: 'get',
+        params
+    })
+}
+
 // 获取邮箱验证码
 export function sendEmailApi(email:string) {
     return request({
@@ -131,5 +141,13 @@ export function savePassWordApi(data:object) {
         url: 'edu/front/student/center/savePassWord',
         method: 'put',
         data
+    })
+}
+
+// 获取公众号二维码
+export function getQrcodeApi() {
+    return request({
+        url: 'edu/front/student/center/getQrcode',
+        method: 'get'
     })
 }

@@ -15,6 +15,9 @@
     <div :class="['nav-item', {'on' : menuType === 'account'}]">
       <a href="" @click.prevent="toAccount()">账号绑定</a>
     </div>
+    <div :class="['nav-item', {'on' : menuType === 'myCoupon'}]">
+      <a href="" @click.prevent="toMyCoupon()">我的优惠券</a>
+    </div>
   </div>
 </template>
 
@@ -75,6 +78,18 @@ const toAccount = ()=>{
   })
   window.open(href, '_self')
 }
+
+/**
+ *
+ * 跳转到我的优惠券
+ */
+const toMyCoupon = ()=>{
+  let { href } =  router.resolve({
+    name: 'MyCoupon'
+  })
+  window.open(href, '_self')
+}
+
 </script>
 
 <style scoped>

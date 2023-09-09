@@ -25,9 +25,13 @@
         <el-skeleton :loading="wxPayLoading" :rows="5" animated >
           <template #default>
             <div class="pay-form">
-              <el-form ref="formWxPayRef"  :rules="formWxPayRules" :model="formWxPay"  label-width="200px"  style="max-width: 960px">
+              <el-form ref="formWxPayRef"  :rules="formWxPayRules" :model="formWxPay"  label-width="250px"  style="max-width: 960px">
                 <el-form-item label="微信公众平台appId" prop="appId">
                   <el-input v-model="formWxPay.appId" placeholder="请输入微信公众平台appId" clearable />
+                </el-form-item>
+
+                <el-form-item label="微信公众平台appSecret" prop="appSecret">
+                  <el-input v-model="formWxPay.appSecret" placeholder="请输入微信公众平台appSecret" clearable />
                 </el-form-item>
 
                 <el-form-item label="微信支付商户号" prop="merchantId">
@@ -46,12 +50,12 @@
                   <el-input v-model="formWxPay.apiV3" placeholder="请输入微信支付apiv3密钥" clearable />
                 </el-form-item>
 
-                <el-form-item label="购买VIP会员通知地址" prop="notifyVipUrl">
-                  <el-input v-model="formWxPay.notifyVipUrl" placeholder="请输入购买VIP会员通知地址" clearable />
+                <el-form-item label="微信支付通知地址" prop="notifyWxPayUrl">
+                  <el-input v-model="formWxPay.notifyWxPayUrl" placeholder="请输入微信支付通知地址" clearable />
                 </el-form-item>
 
-                <el-form-item label="购买课程通知地址" prop="notifyCourseUrl">
-                  <el-input v-model="formWxPay.notifyCourseUrl" placeholder="请输入购买课程通知地址" clearable />
+                <el-form-item label="代金券核销和公众平台通知地址" prop="notifySpUrl">
+                  <el-input v-model="formWxPay.notifySpUrl" placeholder="请输入代金券核销和公众平台通知地址" clearable />
                 </el-form-item>
 
                 <el-form-item>
@@ -90,8 +94,9 @@ const formWxPay = reactive({
   merchantSerialnumber: '',//  商户序列号
   merchantPrivatekey: '', // 商户私钥
   apiV3:'',// apiv3密钥
-  notifyVipUrl:'',//购买VIP会员异步回调通知
-  notifyCourseUrl: '',//购买课程异步回调通知
+  notifyWxPayUrl:'',//微信支付异步回调通知
+  appSecret: '',//微信公众号平台appSecret
+  notifySpUrl: '',// 代金券核销和微信公众平台通知地址
 })
 // 微信支付表单约束规则
 const formWxPayRules = reactive<FormRules>({
@@ -100,8 +105,9 @@ const formWxPayRules = reactive<FormRules>({
   merchantSerialnumber: [{required: true,message: '微信支付商户序列号不能为空！',trigger:'blur'}],
   merchantPrivatekey:[{required: true,message: '微信支付商户私钥不能为空！',trigger:'blur'}],
   apiV3:[{required: true,message: '微信支付商户apiv3密钥不能为空！',trigger:'blur'}],
-  notifyVipUrl:[{required: true,message: '购买VIP会员异步回调通知不能为空！',trigger:'blur'}],
-  notifyCourseUrl: [{required: true,message: '购买课程异步回调通知不能为空！',trigger:'blur'}]
+  notifyWxPayUrl:[{required: true,message: '微信支付异步回调通知不能为空！',trigger:'blur'}],
+  appSecret: [{required: true,message: '微信公众平台appSecret不能为空！',trigger:'blur'}],
+  notifySpUrl: [{required: true,message: '代金券核销和微信公众平台通知地址不能为空！',trigger:'blur'}],
 })
 // 微信支付设置提交按钮状态
 const wxSubLoading = ref(false)
@@ -114,6 +120,7 @@ const onSubmitWxPay = (formEl:FormInstance | undefined) => {
       const { data } = await saveWxPayApi(formWxPay)
       if(data.status===200){
         ElMessage.success(data.message)
+        await getWxPayInfo()
       }else {
         ElMessage.error(data.message)
       }

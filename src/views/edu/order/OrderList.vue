@@ -18,7 +18,6 @@
         v-model="activeName"
         type="card"
         class="demo-tabs"
-        @tab-click="handleClick"
     >
       <!--课程订单明细 start-->
       <el-tab-pane label="课程订单明细" name="first">
@@ -28,7 +27,11 @@
       </el-tab-pane>
       <!--课程订单明细 end-->
       <!--VIP订单明细 start-->
-      <el-tab-pane label="VIP订单明细" name="second">功能待开发...</el-tab-pane>
+      <el-tab-pane label="VIP订单明细" name="second">
+        <!--VIP订单 start-->
+        <OrderVipList/>
+        <!--VIP订单 end-->
+      </el-tab-pane>
       <!--VIP订单明细 end-->
     </el-tabs>
     <!--多标签 end-->
@@ -39,14 +42,8 @@
 <script setup lang="ts">
 import { ref} from 'vue'
 import OrderCourseList from "@/views/edu/order/OrderCourseList.vue";
-
+import OrderVipList from "@/views/edu/order/OrderVipList.vue";
 const activeName = ref('first')
-
-// 修改骨架屏状态
-const success = () => {
-  console.log('数据加载完成了调用success函数')
-  orderCourseLoading.value = false
-}
 
 </script>
 

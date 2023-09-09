@@ -59,13 +59,7 @@
 
        <el-table-column label="课程数量">
          <template #default="scope">
-           <span><el-tag type="success">0</el-tag></span>
-         </template>
-       </el-table-column>
-
-       <el-table-column label="学生数量">
-         <template #default="scope">
-           <span><el-tag>0</el-tag></span>
+           <span><el-tag type="success">{{scope.row.courseTotal}}</el-tag></span>
          </template>
        </el-table-column>
 
@@ -90,12 +84,6 @@
        <el-table-column label="创建时间">
          <template #default="scope">
            <span>{{formatTime(scope.row.createTime,'yyyy-MM-dd')}}</span>
-         </template>
-       </el-table-column>
-
-       <el-table-column label="操作">
-         <template #default="scope">
-          <el-button plain type="success" size="small" @click="editTeacher(scope.row.id)">编辑</el-button>
          </template>
        </el-table-column>
 

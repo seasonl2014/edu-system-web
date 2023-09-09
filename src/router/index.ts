@@ -10,8 +10,9 @@ import {useStudentStore} from "../store/modules/student";
 export const staticRouter = [
     {
         path: '/',
-        redirect: '/index',
-        isMenu: false
+        meta: { title: '学灯网-个人开发者创业专用一站式在线教育平台' },
+        isMenu: false,
+        component: ()=> import('@/views/edu/index/Index.vue')
     },
     {
         path: '/index',
@@ -95,6 +96,12 @@ export const staticRouter = [
                 name: 'Account',
                 meta: {title: '绑定账号-学灯网'},
                 component: ()=> import('@/views/edu/student/Account.vue')
+            },
+            {
+                path: 'student/mycoupon',
+                name: 'MyCoupon',
+                meta: {title: '我的优惠券-学灯网'},
+                component: ()=> import('@/views/edu/student/MyCoupon.vue')
             },
         ]
     },
@@ -236,29 +243,56 @@ export const asyncRoutes = [
                 component: ()=> import('@/views/edu/order/OrderList.vue')
             },
             {
-                path: 'wxcode',
-                name: 'WxCode',
+                path: 'dealmoney',
+                name: 'DealMoney',
                 meta: {
                     title: '收入明细',
                     icon: 'Cellphone',
                     role: ['ROLE_ADMIN']
                 },
-                component: ()=> import('@/views/edu/wxcode/WxCodeList.vue')
+                component: ()=> import('@/views/edu/dealmoney/DealMoneyList.vue')
             },
 
             {
-                path: 'file',
-                name: 'File',
+                path: 'refund',
+                name: 'Refund',
                 meta: {
                     title: '退款记录',
-                    icon: 'SetUp',
+                    icon: 'CreditCard',
                     role: ['ROLE_ADMIN']
                 },
-                component: ()=> import('@/views/edu/file/FileSet.vue')
+                component: ()=> import('@/views/edu/refund/RefundList.vue')
             },
 
         ]
     },
+
+    {
+        path: '/marketing',
+        name: 'Marketing',
+        meta: {
+            title: '营销中心',
+            icon: 'Bowl',
+            role: ['ROLE_ADMIN']
+        },
+        redirect: '/marketing/coupons',
+        component: ()=> import('@/views/system/layout/Index.vue'),
+        isMenu: true,
+        funcNode: 2,
+        children: [
+            {
+                path: 'coupons',
+                name: 'Coupons',
+                meta: {
+                    title: '代金券管理',
+                    icon: 'Handbag',
+                    role: ['ROLE_ADMIN']
+                },
+                component: ()=> import('@/views/edu/marketing/CashCouponsStockList.vue')
+            },
+        ]
+    },
+
     {
         path: '/daily',
         name: 'Daily',

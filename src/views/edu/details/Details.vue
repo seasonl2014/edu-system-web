@@ -262,7 +262,7 @@ import VideoPreview from "@/views/edu/details/components/VideoPreview.vue"
 import {ref,onMounted,reactive} from 'vue'
 import {useRouter,useRoute} from 'vue-router'
 import {useStudentStore} from "@/store/modules/student"
-import { ElMessageBox } from 'element-plus'
+import { ElMessageBox,ElMessage } from 'element-plus'
 import {
   downloadCourseDataApi,
   getChapterListByCourseIdApi, getCourseDataByCourseIdApi,
@@ -298,6 +298,11 @@ const getCourseDetail = async ()=> {
   const { data } = await getCourseDetailApi(courseId)
   courseInfo.value = data.result
   document.title = courseInfo.value.title
+  //登录token过期
+  if (data.status===401){
+    // 清除用户登录信息
+    window.localStorage.removeItem('studentStore')
+  }
 }
 onMounted(()=> {
   getCourseDetail()

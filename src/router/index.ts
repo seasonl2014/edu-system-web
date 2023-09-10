@@ -451,7 +451,7 @@ const router = createRouter({
 })
 
 // 设置白名单
-const whiteList = ['/index','/login','/edu/details','/edu/list','/edu/vip']
+const whiteList = ['','/index','/login','/edu/details','/edu/list','/edu/vip']
 // 路由拦截守卫
 router.beforeEach(async (to,from,next)=> {
     // 1.Nprogress 开始

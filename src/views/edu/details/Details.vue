@@ -11,6 +11,7 @@
   <div class="details-banner">
     <h3>{{courseInfo.title}}</h3>
     <div class="details-tag">
+      <span>官方QQ：11184629</span>
       <span>所属讲师：{{courseInfo.eduTeacher!=null?courseInfo.eduTeacher.name:'未知'}}</span>
       <span v-if="courseInfo.difficulty===0">课程难度：入门</span>
       <span v-if="courseInfo.difficulty===1">课程难度：初级</span>
@@ -36,7 +37,7 @@
           <span><img src="@/static/img/d_ico4.png"> {{courseInfo.viewCount}}次</span>
         </div>
         <div class="details-left-tip">
-          特别说明：<span>加入VIP会员可以免费下载全站源码笔记和观看全站视频</span>
+          特别说明：<span>加入VIP会员可以免费下载全站源码笔记和观看全站视频，有疑问联系官方QQ：11184629</span>
         </div>
       </div>
       <div class="details-one-right">

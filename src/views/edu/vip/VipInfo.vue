@@ -34,6 +34,14 @@
           </div>
         </div>
 
+        <div class="title">
+          <img src="@/static/img/weixin.png">
+          <span>付款后请加站长微信，站长会把你拉入专属VIP一对一答疑群</span>
+        </div>
+        <div class="role-item-box">
+          <img src="@/static/img/mywechat.jpg">
+        </div>
+
 
       </div>
     </div>

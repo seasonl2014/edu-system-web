@@ -9,11 +9,17 @@
   <div class="edu-container">
     <div class="content">
       <div class="box">
+
+        <!--通知公告 start-->
+        <div style="display: flex;justify-content: center;">
+          <span style="font-size: small;color: red;">公告：由于服务器费用昂贵，运营成本增加，VIP会员价格即将上涨，还没购买的抓紧时间购买哦</span>
+        </div>
+        <!--通知公告 end-->
+
          <div class="title">
            <img src="@/static/img/vip.png">
            <span>加入会员免费观看全站课程和下载全站笔记及源码</span>
          </div>
-
         <div class="role-item-box">
           <div v-for="item in vipTypes" class="role-item">
             <div  class="name">{{item.vipName}}</div>
@@ -29,8 +35,11 @@
               <p> 免费答疑 </p>
               <p> 免费远程协助部署项目 </p>
             </div>
+            <div class="vip-btn">
+              <el-button  class="button" :loading="subLoading" @click="buyVip(item.id)"> 点击购买 </el-button>
+              <el-button  class="coupon-button" type="success" :loading="subLoading" @click="openSp"> 领取优惠券 </el-button>
+            </div>
 
-            <el-button  class="button" :loading="subLoading" @click="buyVip(item.id)"> 购买 </el-button>
           </div>
         </div>
 
@@ -41,12 +50,22 @@
         <div class="role-item-box">
           <img src="@/static/img/mywechat.jpg">
         </div>
-
-
       </div>
     </div>
   </div>
   <!--中间内容 end-->
+
+  <!--优惠券弹出框 start-->
+  <el-dialog align-center v-model="qrcodeVisible" width="23%" destroy-on-close @close="closeCoupon">
+    <template #header>
+      <div><h3>扫码立即领取优惠券,购买VIP自动抵消相应金额</h3></div>
+    </template>
+    <div>
+      <vue-qr :logoSrc="logoSrc"  :text="qrcode" :size="400"></vue-qr>
+    </div>
+  </el-dialog>
+  <!--优惠券弹出框 end-->
+
   <!--底部组件 start-->
   <Footer/>
   <!--底部组件 end-->
@@ -60,6 +79,10 @@ import {ref,onMounted} from 'vue'
 import {getAllVipApi, buyVipApi} from "@/api/edu/viptype/vipType"
 import {ElMessage} from 'element-plus'
 import {useRouter } from 'vue-router'
+import {getQrcodeApi} from "@/api/edu/student/student";
+import vueQr from 'vue-qr/src/packages/vue-qr.vue'
+// 二维码中间图片
+import logoSrc from '@/static/img/weixinpay.png'
 // 获取路由对象
 const router = useRouter()
 // vip类型数据
@@ -90,6 +113,27 @@ const buyVip = async (id:number)=> {
   subLoading.value = false
 }
 
+// 公众号二维码
+const qrcode = ref()
+// 公众号二维码弹出框状态
+const qrcodeVisible =ref(false)
+// 打开二维码弹出框并获取微信公众号二维码函数
+const openSp = async () => {
+  const {data} = await getQrcodeApi()
+  if(data.status===200){
+    qrcode.value = data.message
+    qrcodeVisible.value = true
+  }else {
+    ElMessage.error(data.message)
+  }
+
+}
+/**
+ * 关闭优惠券弹出框
+ */
+const closeCoupon = () => {
+  ElMessage.warning('优惠券使用方式：付款的时候，自动使用抵消相应金额')
+}
 </script>
 
 <style scoped>
@@ -212,5 +256,25 @@ const buyVip = async (id:number)=> {
   font-weight: 500;
   color: #fff;
   line-height: 20px;
+}
+
+
+.coupon-button{
+  width: 306px;
+  height: 50px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 20px;
+}
+
+.vip-btn {
+  display: flex;
+  justify-content: center;
 }
 </style>

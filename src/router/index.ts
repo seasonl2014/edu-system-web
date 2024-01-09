@@ -45,6 +45,12 @@ export const staticRouter = [
                 component: ()=>import('@/views/edu/vip/VipInfo.vue')
             },
             {
+                path: 'design',
+                name: 'Design',
+                meta: {title: '毕业设计 - 学灯网'},
+                component: ()=>import('@/views/edu/design/GraduationDesign.vue')
+            },
+            {
                 path: 'viporderpay/:orderno',
                 name: 'VipOrderPay',
                 meta: {title: 'VIP订单付款 - 学灯网'},
@@ -451,7 +457,7 @@ const router = createRouter({
 })
 
 // 设置白名单
-const whiteList = ['/index','/login','/edu/details','/edu/list','/edu/vip']
+const whiteList = ['/index','/login','/edu/details','/edu/list','/edu/vip','/edu/design']
 // 路由拦截守卫
 router.beforeEach(async (to,from,next)=> {
     // 1.Nprogress 开始

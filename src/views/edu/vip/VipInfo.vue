@@ -12,7 +12,7 @@
 
         <!--通知公告 start-->
         <div style="display: flex;justify-content: center;">
-          <span style="font-size: small;color: red;">公告：由于服务器费用昂贵，运营成本增加，VIP会员价格即将上涨，还没购买的抓紧时间购买哦</span>
+          <span style="font-size: small;color: red;">公告1：由于服务器费用昂贵，运营成本增加，VIP会员价格即将上涨，还没购买的抓紧时间购买哦</span>
         </div>
         <!--通知公告 end-->
 
@@ -39,7 +39,9 @@
               <el-button  class="button" :loading="subLoading" @click="buyVip(item.id)"> 点击购买 </el-button>
               <el-button  class="coupon-button" type="success" :loading="subLoading" @click="openSp"> 领取50元优惠券 </el-button>
             </div>
-
+            <div style="display: flex;justify-content: center;margin-top: 10px;">
+              <span style="font-size: small;color: darkblue;">优惠券领取和使用方式：点击优惠券按钮，弹出二维码，扫码关注公众号自动领取优惠券，在个人中心我的优惠券可以查看是否领取成功，付款时自动扣除优惠券的金额，无需其他操作！</span>
+            </div>
           </div>
         </div>
 

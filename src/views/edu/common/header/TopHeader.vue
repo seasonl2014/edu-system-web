@@ -20,6 +20,10 @@
         <router-link to="/edu/list">全部课程</router-link>
       </li>
 
+      <li class="edu-nav-item">
+        <router-link to="/edu/design" target="_blank">毕业设计</router-link>
+      </li>
+
       <!--已登录 start-->
       <template v-if="studentToken!=''">
         <li class="edu-nav-item edu-member" :class="{'edu-active':eduActive=='/edu/myInfo'}">

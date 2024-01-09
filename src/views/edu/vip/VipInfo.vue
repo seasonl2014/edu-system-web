@@ -37,7 +37,7 @@
             </div>
             <div class="vip-btn">
               <el-button  class="button" :loading="subLoading" @click="buyVip(item.id)"> 点击购买 </el-button>
-              <el-button  class="coupon-button" type="success" :loading="subLoading" @click="openSp"> 领取优惠券 </el-button>
+              <el-button  class="coupon-button" type="success" :loading="subLoading" @click="openSp"> 领取50元优惠券 </el-button>
             </div>
 
           </div>

@@ -25,7 +25,17 @@
         <el-skeleton :loading="SmsLoading" :rows="5" animated >
           <template #default>
             <div class="pay-form">
+              
               <el-form ref="formSmsRef"  :rules="formSmsRules" :model="formSms"  label-width="200px"  style="max-width: 960px">
+                
+                <el-form-item label="AccessKey ID" prop="accessKeyID">
+                  <el-input v-model="formSms.accessKeyID" placeholder="请输入AccessKey ID" clearable />
+                </el-form-item>
+
+                <el-form-item label="AccessKey Secret" prop="accessKeySecret">
+                  <el-input v-model="formSms.accessKeySecret" placeholder="请输入AccessKey Secret" clearable />
+                </el-form-item>
+                
                 <el-form-item label="短信区域ID" prop="regionId">
                   <el-input v-model="formSms.regionId" placeholder="请输入短信区域ID" clearable />
                 </el-form-item>
@@ -68,6 +78,8 @@ const formSmsRef = ref<FormInstance>()
 // 微信支付表单数据对象
 const formSms = reactive({
   id:'',
+  accessKeyID: '', // AccessKey ID
+  accessKeySecret: '', // AccessKey Secret
   regionId: '', // 区域ID
   signName: '', // 短信签名
   templateCode: '',//  短信模板
@@ -99,14 +111,15 @@ const onSubmitSms = (formEl:FormInstance | undefined) => {
   })
 }
 
-// 获取微信支付信息
+// 获取短信信息
 const getSmsInfo = async () => {
   const {data} = await getSmsInfoApi()
   // 给表单填充数据
   if(data.status === 200 && data.result!=null){
-    for (const key in formSms) {
-      formSms[key] = data.result[key]
-    }
+    Object.assign(formSms, data.result);
+    //for (const key in formSms) {
+     // formSms[key] = data.result[key]
+    //}
   }
 
 }
